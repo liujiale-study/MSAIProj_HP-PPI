@@ -1,0 +1,27 @@
+# Create Environment
+conda create --name MSAIProj python=3.9.18
+
+# Install Dependencies
+conda install -c anaconda numpy
+conda install -c anaconda pandas
+conda install pytorch torchvision torchaudio pytorch-cuda=12.1 -c pytorch -c nvidia
+
+# Pip required to install additional libraries from PyG
+conda install -n MSAIProj pip
+
+# (Optional) Check pytorch and cuda version:
+python -c "import torch; print(torch.__version__)"
+python -c "import torch; print(torch.version.cuda)"
+
+# Installing additional libraries from pyg
+# Please Ensure ${TORCH} and ${CUDA} fits your setup:  pip install pyg_lib torch_scatter torch_sparse -f https://data.pyg.org/whl/torch-${TORCH}+${CUDA}.html
+# Ensure you are using your conda environment's pip
+# Example:
+/root/anaconda3/envs/MSAIProj/bin/pip install pyg_lib torch_scatter torch_sparse -f https://data.pyg.org/whl/torch-2.1.0+cu121.html
+
+# Install PyG in a similar way
+/root/anaconda3/envs/MSAIProj/bin/pip install torch_geometric
+
+
+
+
