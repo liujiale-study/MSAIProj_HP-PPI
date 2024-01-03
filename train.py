@@ -1,7 +1,11 @@
 from torch_geometric.loader import LinkNeighborLoader
-import scripts.data_setup as data_setup
-import config as cfg
 from torch_geometric import seed_everything
+import torch
+import tqdm
+import torch.nn.functional as F
+import data_setup
+import config as cfg
+import model as m
 
 
 def main():
@@ -9,7 +13,7 @@ def main():
     seed_everything(cfg.RANDOM_SEED)
     
     # Retrieve Data from files
-    train_data, val_data, test_data = data_setup.get_train_val_test_data()
+    train_data, val_data, test_data, data_metadata = data_setup.get_train_val_test_data()
     
     # Define seed edges:
     edge_label_index = train_data[cfg.NODE_MOUSE, cfg.EDGE_INTERACT, cfg.NODE_VIRUS].edge_label_index
@@ -28,15 +32,35 @@ def main():
         shuffle=True,
     )
     
-    # Inspect a sample:
-    # sampled_data = next(iter(train_loader))
+    model = m.HP_PPI_Model(num_hidden_chnls=64, data_metadata=data_metadata)
 
-    # print("Sampled mini-batch:")
-    # print("===================")
-    # print(sampled_data)
     
-    # print()
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    print(f"Device: '{device}'")
 
+    model = model.to(device)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=cfg.ADAMW_LR)
+    start_epoch = 1
+    
+    
+
+    for epoch in range(start_epoch, (cfg.NUM_EPOCHS + 1)):
+        total_loss = total_examples = 0
+        for sampled_data in tqdm.tqdm(train_loader):
+            optimizer.zero_grad()
+
+            sampled_data.to(device)
+            pred = model(sampled_data)
+
+            ground_truth = sampled_data[cfg.NODE_MOUSE, cfg.EDGE_INTERACT, cfg.NODE_VIRUS].edge_label
+            loss = F.cross_entropy(pred, ground_truth)
+            
+            loss.backward()
+            optimizer.step()
+            total_loss += float(loss) * pred.numel()
+            total_examples += pred.numel()
+            
+        print(f"Epoch: {epoch:03d}, Loss: {total_loss / total_examples:.4f}")
     
     
 

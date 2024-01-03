@@ -16,12 +16,16 @@ def get_train_val_test_data():
 
     # Setup data tensor
     df_mouse = df_mouse.sort_values(cfg.COLNAME_MID)
-    mouse_feat = torch.from_numpy(df_mouse.drop(columns=[cfg.COLNAME_MID, cfg.COLNAME_MUNIPROTID]).values)
+    mouse_feat = torch.from_numpy(df_mouse.drop(columns=[cfg.COLNAME_MID, cfg.COLNAME_MUNIPROTID]).values).to(torch.float32)
 
     df_virus = df_virus.sort_values(cfg.COLNAME_VID)
-    virus_feat = torch.from_numpy(df_virus.drop(columns=[cfg.COLNAME_VID, cfg.COLNAME_VUNIPROTID]).values)
+    virus_feat = torch.from_numpy(df_virus.drop(columns=[cfg.COLNAME_VID, cfg.COLNAME_VUNIPROTID]).values).to(torch.float32)
 
     edge_index_mouse_to_virus = torch.t(torch.from_numpy(df_interactions[[cfg.COLNAME_MID, cfg.COLNAME_VID]].values))
+    
+    edge_feat = torch.from_numpy(df_interactions['rating'].values).to(torch.float32)   
+    edge_feat = torch.unsqueeze(edge_feat, 1)
+
 
 
     # === Setup HetreoData ===
@@ -37,8 +41,7 @@ def get_train_val_test_data():
     data[cfg.NODE_MOUSE, cfg.EDGE_INTERACT, cfg.NODE_VIRUS].edge_index = edge_index_mouse_to_virus
     
     # Add edge attributes
-    data[cfg.NODE_MOUSE, cfg.EDGE_INTERACT, cfg.NODE_VIRUS].edge_attrs = torch.from_numpy(df_interactions['rating'].values)
-
+    data[cfg.NODE_MOUSE, cfg.EDGE_INTERACT, cfg.NODE_VIRUS].x = edge_feat
     # We also need to make sure to add the reverse edges from virus to mouse
     # in order to let a GNN be able to pass messages in both directions.
     # We can leverage the `T.ToUndirected()` transform for this from PyG:
@@ -66,6 +69,8 @@ def get_train_val_test_data():
     )
 
     train_data, val_data, test_data = transform(data)
+    
+
 
     # Ensure no negative edges added:
     assert train_data[cfg.NODE_MOUSE, cfg.EDGE_INTERACT, cfg.NODE_VIRUS].edge_label.min() == 1
@@ -96,7 +101,7 @@ def get_train_val_test_data():
     # print("================")
     # print(test_data)
     
-    return train_data, val_data, test_data
+    return train_data, val_data, test_data, data.metadata()
 
     
 # === get_edge_label Function ===

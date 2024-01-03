@@ -15,6 +15,14 @@ COLNAME_VID = "vID"
 COLNAME_VUNIPROTID  = "vUniProtID"
 COLNAME_LABEL = "label"
 
+# Number of Data Features
+NUM_FEAT_MOUSE = 9      # Size of feature-vector for mouse
+NUM_FEAT_VIRUS = 20     # Size of feature-vector for virus
+
+# Number of Classes in Model Prediction
+NUM_PREDICT_CLASSES = 3 
+
+
 # Graph Node/Edge Names
 NODE_MOUSE = "mouse"
 NODE_VIRUS = "virus"
@@ -42,5 +50,11 @@ INDEX_EDGE_LABEL_VID = 1
 # Applies to each node per iteration
 TRAIN_SUBGRAPH_NUM_NEIGHBOURS = [20,10] 
 
-# Batch Sizes
+# (Training) Batch Sizes
 TRAIN_BATCH_SIZE = 128
+
+# (Training) Optimizer Learning Rate
+ADAMW_LR = 0.001
+
+# Number of Training Epochs
+NUM_EPOCHS = 3
