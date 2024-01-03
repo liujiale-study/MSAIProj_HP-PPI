@@ -1,5 +1,6 @@
 # Create Environment
 conda create --name MSAIProj python=3.9.18
+conda activate MSAIProj
 
 # Install Dependencies
 conda install -c anaconda numpy
