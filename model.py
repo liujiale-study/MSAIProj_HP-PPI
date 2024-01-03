@@ -1,5 +1,5 @@
 import torch
-from torch_geometric.nn import SAGEConv, to_hetero
+from torch_geometric.nn import ResGatedGraphConv, to_hetero
 from torch_geometric.data import HeteroData
 import torch.nn.functional as F
 
@@ -9,13 +9,13 @@ class GNN(torch.nn.Module):
     def __init__(self, num_hidden_chnls):
         super().__init__()
 
-        self.conv1 = SAGEConv(num_hidden_chnls, num_hidden_chnls)
-        self.conv2 = SAGEConv(num_hidden_chnls, num_hidden_chnls)
+        self.conv1 = ResGatedGraphConv(num_hidden_chnls, num_hidden_chnls, edge_dim=cfg.NUM_FEAT_INTERACTION)
+        self.conv2 = ResGatedGraphConv(num_hidden_chnls, num_hidden_chnls, edge_dim=cfg.NUM_FEAT_INTERACTION)
 
-    def forward(self, x, edge_index) -> torch.Tensor:        
-        x = self.conv1(x, edge_index)
+    def forward(self, x, edge_index, x_edge) -> torch.Tensor:        
+        x = self.conv1(x, edge_index, x_edge)
         x = F.relu(x)
-        x = self.conv2(x, edge_index)
+        x = self.conv2(x, edge_index, x_edge)
         x = F.relu(x)
         return x
 
@@ -37,17 +37,21 @@ class HP_PPI_Model(torch.nn.Module):
         self.classifer = torch.nn.Linear(num_hidden_chnls*2, cfg.NUM_PREDICT_CLASSES)
 
     def forward(self, data: HeteroData) -> torch.Tensor:
-        
+                
         x_dict = {
           cfg.NODE_MOUSE: self.mouse_lin(data[cfg.NODE_MOUSE].x),
           cfg.NODE_VIRUS: self.virus_lin(data[cfg.NODE_VIRUS].x)
         }
         
+        x_edge = {
+            (cfg.NODE_MOUSE, cfg.EDGE_INTERACT, cfg.NODE_VIRUS): data[cfg.NODE_MOUSE, cfg.EDGE_INTERACT, cfg.NODE_VIRUS].x,
+            (cfg.NODE_VIRUS, cfg.REV_EDGE_INTERACT, cfg.NODE_MOUSE): data[cfg.NODE_VIRUS, cfg.REV_EDGE_INTERACT, cfg.NODE_MOUSE].x,
+        }
+        
         # `x_dict` holds feature matrices of all node types
         # `edge_index_dict` holds all edge indices of all edge types
-        # `x_edge` contains edge features
-        x_dict = self.gnn(x_dict, data.edge_index_dict)
-        
+        # `x_edge` contains feature matrices of all edge types
+        x_dict = self.gnn(x_dict, data.edge_index_dict, x_edge)
         
         x_mouse = x_dict[cfg.NODE_MOUSE]
         x_virus = x_dict[cfg.NODE_VIRUS]
@@ -58,9 +62,7 @@ class HP_PPI_Model(torch.nn.Module):
         edge_embed_virus = x_virus[edge_label_index[1]]
         edge_embed = torch.cat((edge_embed_mouse, edge_embed_virus), 1)
         
-        
         out = self.classifer(edge_embed)
 
-        
         return out
 

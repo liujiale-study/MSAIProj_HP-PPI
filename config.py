@@ -18,6 +18,7 @@ COLNAME_LABEL = "label"
 # Number of Data Features
 NUM_FEAT_MOUSE = 9      # Size of feature-vector for mouse
 NUM_FEAT_VIRUS = 20     # Size of feature-vector for virus
+NUM_FEAT_INTERACTION = 1 # Size of feature-vector for interactions
 
 # Number of Classes in Model Prediction
 NUM_PREDICT_CLASSES = 3 
