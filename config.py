@@ -54,7 +54,7 @@ TRAIN_SUBGRAPH_NUM_NEIGHBOURS = [20,10]
 # (Training) Batch Sizes
 TRAIN_BATCH_SIZE = 128
 
-# (Training) Optimizer Learning Rate
+# (Training) Optimizer Params
 ADAMW_LR = 0.001
 
 # Number of Training Epochs

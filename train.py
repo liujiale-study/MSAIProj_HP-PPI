@@ -39,28 +39,37 @@ def main():
     print(f"Device: '{device}'")
 
     model = model.to(device)
-    optimizer = torch.optim.AdamW(model.parameters(), lr=cfg.ADAMW_LR)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=cfg.ADAMW_LR, weight_decay=cfg.ADAMW_WEIGHT_DECAY)
     start_epoch = 1
-    
-    
 
     for epoch in range(start_epoch, (cfg.NUM_EPOCHS + 1)):
-        total_loss = total_examples = 0
+        total_loss = total_data_instances = 0
+        model.train()
         for sampled_data in tqdm.tqdm(train_loader):
+            # Reset Gradiant
             optimizer.zero_grad()
 
+            # Input batch into model
             sampled_data.to(device)
             pred = model(sampled_data)
 
+            # Calculate Cross Entropy between Labels and Prediction
             ground_truth = sampled_data[cfg.NODE_MOUSE, cfg.EDGE_INTERACT, cfg.NODE_VIRUS].edge_label
             loss = F.cross_entropy(pred, ground_truth)
-            
+
+            # Backpropagation
             loss.backward()
             optimizer.step()
-            total_loss += float(loss) * pred.numel()
-            total_examples += pred.numel()
             
-        print(f"Epoch: {epoch:03d}, Loss: {total_loss / total_examples:.4f}")
+            # Record Loss and Data Instance Count
+            num_data_instances = len(ground_truth)
+            total_loss += float(loss) * num_data_instances
+            total_data_instances += num_data_instances
+        
+        model.eval()
+        # TODO: Add Validation Loop
+        
+        print(f"Epoch: {epoch:03d}, Train Loss: {total_loss / total_data_instances:.4f}")
     
     
 
