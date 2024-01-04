@@ -44,18 +44,20 @@ INDEX_EDGE_LABEL_MID = 0
 INDEX_EDGE_LABEL_VID = 1
 
 
-# (Training) Subgraph Sampling
+# Subgraph Sampling
 # Index 0: Number of 1-hop neighbours to sample
 # Index 1: Number of 2-hop neighbours to sample
 # ... etc.
 # Applies to each node per iteration
 TRAIN_SUBGRAPH_NUM_NEIGHBOURS = [20,10] 
 
-# (Training) Batch Sizes
+# Batch Sizes
 TRAIN_BATCH_SIZE = 128
+VAL_BATCH_SIZE = 128
 
 # (Training) Optimizer Params
 ADAMW_LR = 0.001
+ADAMW_WEIGHT_DECAY = 0.01
 
 # Number of Training Epochs
-NUM_EPOCHS = 3
+NUM_EPOCHS = 6
