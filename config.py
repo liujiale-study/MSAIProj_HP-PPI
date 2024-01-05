@@ -1,7 +1,7 @@
 # Data Paths
-PATH_VIRUS_FEAT = "./data/movie_feat.csv"
-PATH_MOUSE_FEAT = "./data/user_feat.csv"
-PATH_INTERACTIONS = "./data/ratings.csv"
+PATH_VIRUS_FEAT = "./data/virus_nodes.csv"
+PATH_MOUSE_FEAT = "./data/mouse_nodes.csv"
+PATH_INTERACTIONS = "./data/interaction_edges.csv"
 PATH_CHECKPOINTS = "./checkpoints"
 
 # Global Random Seed
@@ -16,12 +16,13 @@ COLNAME_MID = "mID"
 COLNAME_MUNIPROTID = "mUniProtID"
 COLNAME_VID = "vID"
 COLNAME_VUNIPROTID  = "vUniProtID"
-COLNAME_LABEL = "label"
+COLNAME_LABEL = "virulence_class"
+COLNAME_INTERACT_PROB = "interact_prob"
 
 # Number of Data Features
-NUM_FEAT_MOUSE = 9      # Size of feature-vector for mouse
-NUM_FEAT_VIRUS = 20     # Size of feature-vector for virus
-NUM_FEAT_INTERACTION = 1 # Size of feature-vector for interactions
+NUM_FEAT_MOUSE = 2049       # Size of feature-vector for mouse
+NUM_FEAT_VIRUS = 2048       # Size of feature-vector for virus
+NUM_FEAT_INTERACTION = 1    # Size of feature-vector for interactions
 
 # Number of Classes in Model Prediction
 NUM_PREDICT_CLASSES = 3 

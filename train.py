@@ -16,6 +16,7 @@ def main(args):
     seed_everything(cfg.RANDOM_SEED)
     
     # Retrieve Data from files
+    print("Retrieving Data...")
     train_data, val_data, test_data, data_metadata = data_setup.get_train_val_test_data()
     
     # Define seed edges:

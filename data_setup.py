@@ -23,7 +23,7 @@ def get_train_val_test_data():
 
     edge_index_mouse_to_virus = torch.t(torch.from_numpy(df_interactions[[cfg.COLNAME_MID, cfg.COLNAME_VID]].values))
     
-    edge_feat = torch.from_numpy(df_interactions['rating'].values).to(torch.float32)   
+    edge_feat = torch.from_numpy(df_interactions[cfg.COLNAME_INTERACT_PROB].values).to(torch.float32)   
     edge_feat = torch.unsqueeze(edge_feat, 1)
 
 
