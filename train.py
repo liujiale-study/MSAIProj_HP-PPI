@@ -114,7 +114,7 @@ def main(args):
         train_loss = total_train_loss / total_train_data_instances
         
         # Compute accuracy
-        train_acc = total_train_corrects / total_train_data_instances
+        train_acc = total_train_corrects * 100 / total_train_data_instances
                 
         # Validation Loop
         list_val_softmax_preds = []
@@ -155,11 +155,11 @@ def main(args):
         val_loss = total_val_loss / num_val_ground_truths
         
         # Compute accuracy
-        val_acc = total_val_corrects / num_val_ground_truths
+        val_acc = total_val_corrects * 100 / num_val_ground_truths
         
         # Print Results to Console
-        print(f"Epoch: {epoch:03d}, Train Loss: {train_loss:.4f}, Train Acc: {train_acc:.4f}")
-        print(f"Validation Loss: {val_loss:.4f}, Acc: {val_acc:.4f}, ROC-AUC: {val_roc_auc:.4f}")
+        print(f"Epoch: {epoch:03d}, Train Loss: {train_loss:.4f}, Train Acc: {train_acc:.2f}%")
+        print(f"Validation Loss: {val_loss:.4f}, Acc: {val_acc:.2f}%, ROC-AUC: {val_roc_auc:.4f}")
         
         # Update metric records
         list_rec.append([epoch, train_loss, train_acc, val_loss, val_acc, val_roc_auc])
