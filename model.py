@@ -20,7 +20,7 @@ class GNN(torch.nn.Module):
         return x
 
 
-class HP_PPI_Model(torch.nn.Module):
+class HP_PPI_Prediction_Model(torch.nn.Module):
     def __init__(self, num_hidden_chnls, data_metadata):
         super().__init__()
         
@@ -57,7 +57,8 @@ class HP_PPI_Model(torch.nn.Module):
         x_virus = x_dict[cfg.NODE_VIRUS]
         edge_label_index = data[cfg.NODE_MOUSE, cfg.EDGE_INTERACT, cfg.NODE_VIRUS].edge_label_index
         
-        # Convert node embeddings to edge-level representations:
+        # Convert node features to edge features:
+        # An edge's features is derived by concatnating the features of the mouse and virus nodes that it connects
         edge_embed_mouse = x_mouse[edge_label_index[0]]
         edge_embed_virus = x_virus[edge_label_index[1]]
         edge_embed = torch.cat((edge_embed_mouse, edge_embed_virus), 1)

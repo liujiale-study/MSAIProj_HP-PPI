@@ -51,6 +51,9 @@ INDEX_EDGE_LABEL_VID = 1
 
 # === Model Setup and Train/Val/Test Loop ===
 
+# Number of input channels for model's hidden layers
+MODEL_HIDDEN_NUM_CHNLS=64
+
 # Subgraph Sampling
 # Index 0: Number of 1-hop neighbours to sample
 # Index 1: Number of 2-hop neighbours to sample
@@ -67,7 +70,7 @@ ADAMW_LR = 0.001
 ADAMW_WEIGHT_DECAY = 0.01
 
 # Number of Training Epochs
-NUM_EPOCHS = 6
+NUM_EPOCHS = 5
 
 # =============================================
 

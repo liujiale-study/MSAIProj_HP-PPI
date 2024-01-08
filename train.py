@@ -50,7 +50,7 @@ def main(args):
     )
     
     # Model Setup
-    model = m.HP_PPI_Model(num_hidden_chnls=64, data_metadata=data_metadata)    
+    model = m.HP_PPI_Prediction_Model(num_hidden_chnls=cfg.MODEL_HIDDEN_NUM_CHNLS, data_metadata=data_metadata)    
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print(f"Device: '{device}'")
     model = model.to(device)
