@@ -86,15 +86,16 @@ def write_test_results(fpath_chkpoint_folder, loss, list_acc, classifi_report, i
     
     # Prepare lines to write
     lines = []
-    lines.append("==== Losss ====")
-    lines.append("Test Loss:" + str(loss))
+    lines.append("==== Losss ====\n")
+    lines.append("Test Loss:" + str(loss) + '\n')
+    lines.append("\n")
     
-    lines.append("==== Accuracy ====")
+    lines.append("==== Accuracy ====\n")
     for i in range(0, len(cfg.RESULT_ACC_LINES_BY_CLASS)):
-        lines.append(cfg.RESULT_ACC_LINES_BY_CLASS[i] + str(list_acc[i]) + "%")
-    lines.append("")    
+        lines.append(cfg.RESULT_ACC_LINES_BY_CLASS[i] + str(list_acc[i]) + "%\n")
+    lines.append("\n")    
     
-    lines.append("==== Classification Report ====")
+    lines.append("==== Classification Report ====\n")
     lines.append(str(classifi_report))
     
     # Write to file
@@ -104,7 +105,7 @@ def write_test_results(fpath_chkpoint_folder, loss, list_acc, classifi_report, i
     # Print to console
     if is_print_to_console:
         for line in lines:
-            print(line)
+            print(line.rstrip())
 
 # Function for getting list of accuracies
 # Arguments
