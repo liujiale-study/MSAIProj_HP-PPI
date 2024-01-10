@@ -7,7 +7,7 @@ import torch.nn.functional as F
 import config as cfg
 import model as m
 import data_setup
-import file_io
+import util
 from sklearn.metrics import classification_report, confusion_matrix
 
 
@@ -51,7 +51,7 @@ def main(args):
         fpath_chkpoint_folder = args.cpfolder
         print("Loading from Checkpoint Folder: " + fpath_chkpoint_folder)
         
-        _, model_state_dict, optim_state_dict, _ = file_io.load_checkpoint(fpath_chkpoint_folder)
+        _, model_state_dict, optim_state_dict, _ = util.load_checkpoint(fpath_chkpoint_folder)
 
         model.load_state_dict(model_state_dict)
         optimizer.load_state_dict(optim_state_dict)    
@@ -97,18 +97,12 @@ def main(args):
     loss = total_loss / num_total_data_instances
     
     # Compute Accuracy Scores
-    list_acc = []
-    num_total_corrects = 0
-    for i in range (0, cfg.NUM_PREDICT_CLASSES):
-        list_acc.append(arr_confusion_matrix[i][i]*100/num_total_data_instances)
-        num_total_corrects = num_total_corrects + arr_confusion_matrix[i][i]
-    list_acc.append(num_total_corrects*100/num_total_data_instances)
-    
+    list_acc = util.get_list_acc(arr_confusion_matrix)
     
     # Computes the average AUC of all possible pairwise combinations of classes
     dict_classification_report = classification_report(arr_ground_truths, arr_preds, target_names=cfg.CLASSIFICATION_REPORT_CLASS_LABELS)
     
-    file_io.write_test_results(fpath_chkpoint_folder, loss, list_acc, dict_classification_report)
+    util.write_test_results(fpath_chkpoint_folder, loss, list_acc, dict_classification_report)
         
         
         

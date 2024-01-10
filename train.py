@@ -7,7 +7,7 @@ import torch.nn.functional as F
 import config as cfg
 import model as m
 import data_setup
-import file_io
+import util
 from sklearn.metrics import confusion_matrix
 
 
@@ -62,14 +62,14 @@ def main(args):
     
     # Setup CrossEntropy/Softmax
     softmax = torch.nn.Softmax(dim=1)
-    cross_entropy = torch.nn.CrossEntropyLoss(weight=torch.tensor([0.001, 1, 1, 1]).to(device=device))
+    cross_entropy = torch.nn.CrossEntropyLoss(weight=torch.tensor(cfg.CROSS_ENTROPY_WEIGHTS).to(device=device))
     
     # Load from checkpoint if any specified
     if args.cpfolder != None:
         fpath_chkpoint_folder = args.cpfolder
         print("Loading from Checkpoint Folder: " + fpath_chkpoint_folder)
         
-        chkpt_epoch, model_state_dict, optim_state_dict, chkpt_list_rec = file_io.load_checkpoint(fpath_chkpoint_folder)
+        chkpt_epoch, model_state_dict, optim_state_dict, chkpt_list_rec = util.load_checkpoint(fpath_chkpoint_folder)
 
         start_epoch = chkpt_epoch + 1
         model.load_state_dict(model_state_dict)
@@ -123,19 +123,13 @@ def main(args):
         train_num_total_data_instances =  len(arr_train_ground_truths)
     
         # Get Confusion Matrix
-        arr_train_confusion_matrix = confusion_matrix(arr_train_ground_truths, arr_train_preds)
+        arr_train_cmatrix = confusion_matrix(arr_train_ground_truths, arr_train_preds)
     
         # Compute average loss per test instance
         train_loss = total_train_loss / train_num_total_data_instances
     
         # Compute Accuracy Scores
-        list_train_acc = [] # train accuracy per class, followed by overall accuracy
-        num_total_corrects = 0
-        for i in range (0, cfg.NUM_PREDICT_CLASSES):
-            list_train_acc.append(arr_train_confusion_matrix[i][i]*100/train_num_total_data_instances)
-            num_total_corrects = num_total_corrects + arr_train_confusion_matrix[i][i]
-        list_train_acc.append(num_total_corrects*100/train_num_total_data_instances)
-        
+        list_train_acc = util.get_list_acc(arr_train_cmatrix)
                 
         # Validation Loop
         
@@ -171,18 +165,13 @@ def main(args):
         val_num_total_data_instances =  len(arr_val_ground_truth)
     
         # Get Confusion Matrix
-        arr_val_confusion_matrix = confusion_matrix(arr_val_ground_truth, arr_val_preds)
+        arr_val_cmatrix = confusion_matrix(arr_val_ground_truth, arr_val_preds)
     
         # Compute average loss per evaluated data instance
         val_loss = total_val_loss / val_num_total_data_instances
     
         # Compute Accuracy Scores
-        list_val_acc = [] # validation accuracy per class, followed by overall accuracy
-        num_total_corrects = 0
-        for i in range (0, cfg.NUM_PREDICT_CLASSES):
-            list_val_acc.append(arr_val_confusion_matrix[i][i]*100/val_num_total_data_instances)
-            num_total_corrects = num_total_corrects + arr_val_confusion_matrix[i][i]
-        list_val_acc.append(num_total_corrects*100/val_num_total_data_instances)
+        list_val_acc = util.get_list_acc(arr_val_cmatrix)
         
         # Print Results to Console
         print(f"Epoch: {epoch:03d}, Train Loss: {train_loss:.4f}, Overall Train Acc: {list_train_acc[-1]:.2f}%")
@@ -193,12 +182,12 @@ def main(args):
         
         # Checkpoint every x epoch
         if epoch % cfg.CHKPOINT_EVERY_NUM_EPOCH == 0:
-            file_io.save_checkpoint(epoch, model, optimizer, list_rec)
+            util.save_checkpoint(epoch, model, optimizer, list_rec)
         
     # All Epochs Finished
     # Save to checkpoint
     print("Training Finished")
-    file_io.save_checkpoint(cfg.NUM_EPOCHS, model, optimizer, list_rec, True)
+    util.save_checkpoint(cfg.NUM_EPOCHS, model, optimizer, list_rec, True)
         
 
 

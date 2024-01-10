@@ -109,4 +109,26 @@ def write_test_results(fpath_chkpoint_folder, loss, list_acc, dict_classificatio
     if is_print_to_console:
         for line in lines:
             print(line)
+
+# Function for getting list of accuracies
+# Arguments
+#   cm: Confusion Matrix
+# Return
+#   list_acc: List of accuracy per class in order of [class 0 acc., class 1 acc., class 2 acc., ..., overall acc], numbers are in percentages
+def get_list_acc(cm):
+    num_class, _ = cm.shape
+    list_acc = [] # accuracy per class, followed by overall accuracy
+    for curr_class in range(0, num_class):
+        num_tp = cm[curr_class][curr_class] # True Positive Count
+        num_tn = 0
+        for tmp_gt in range(0, num_class):
+            for tmp_pred in range(0, num_class):
+                if tmp_gt != curr_class and tmp_pred != curr_class:
+                    num_tn += cm[tmp_gt][tmp_pred]
+
+        tmp_acc = (num_tn + num_tp)*100/cm.sum()
+        list_acc.append(tmp_acc)
     
+    list_acc.append(cm.diagonal().sum()*100/cm.sum())
+    
+    return list_acc

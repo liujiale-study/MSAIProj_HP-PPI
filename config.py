@@ -71,7 +71,10 @@ ADAMW_LR = 0.001
 ADAMW_WEIGHT_DECAY = 0.01
 
 # Number of Training Epochs
-NUM_EPOCHS = 50
+NUM_EPOCHS = 20
+
+# Cross Entropy Weights
+CROSS_ENTROPY_WEIGHTS = [0.01, 1, 1, 1]
 
 # =============================================
 
