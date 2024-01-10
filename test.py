@@ -98,7 +98,7 @@ def main(args):
     list_acc = util.get_list_acc(arr_confusion_matrix)
     
     # Get classification report
-    class_report = classification_report(arr_ground_truths, arr_preds, target_names=cfg.CLASSIFICATION_REPORT_CLASS_LABELS, zero_division=0,digits=6)
+    class_report = classification_report(arr_ground_truths, arr_preds, target_names=cfg.CLASSIFICATION_REPORT_CLASS_LABELS, zero_division=0, digits=6)
     
     util.write_test_results(fpath_chkpoint_folder, loss, list_acc, class_report)
         
