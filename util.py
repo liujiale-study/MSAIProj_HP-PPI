@@ -78,10 +78,9 @@ def load_checkpoint(fpath_chkpoint_folder):
 # Function for writing test result to file
 # Arguments
 #   loss: Average loss per evaluated data instance
-#   list_acc: List of accuracy scores, arrange according to the same sequence as RESULT_LINES_BY_CLASS
 #   classification_report: Classification Report from sklearn.metrics.classification_report
 #   is_print_to_console: Print file contents to console too
-def write_test_results(fpath_chkpoint_folder, loss, list_acc, classifi_report, is_print_to_console=True):
+def write_test_results(fpath_chkpoint_folder, loss, classifi_report, is_print_to_console=True):
     fpath_test_result = os.path.join(fpath_chkpoint_folder, cfg.FNAME_TEST_RESULT_TXT)
     
     # Prepare lines to write
@@ -89,11 +88,6 @@ def write_test_results(fpath_chkpoint_folder, loss, list_acc, classifi_report, i
     lines.append("==== Losss ====\n")
     lines.append("Test Loss:" + str(loss) + '\n')
     lines.append("\n")
-    
-    lines.append("==== Accuracy ====\n")
-    for i in range(0, len(cfg.RESULT_ACC_LINES_BY_CLASS)):
-        lines.append(cfg.RESULT_ACC_LINES_BY_CLASS[i] + str(list_acc[i]) + "%\n")
-    lines.append("\n")    
     
     lines.append("==== Classification Report ====\n")
     lines.append(str(classifi_report))
@@ -106,26 +100,3 @@ def write_test_results(fpath_chkpoint_folder, loss, list_acc, classifi_report, i
     if is_print_to_console:
         for line in lines:
             print(line.rstrip())
-
-# Function for getting list of accuracies
-# Arguments
-#   cm: Confusion Matrix
-# Return
-#   list_acc: List of accuracy per class in order of [class 0 acc., class 1 acc., class 2 acc., ..., overall acc], numbers are in percentages
-def get_list_acc(cm):
-    num_class, _ = cm.shape
-    list_acc = [] # accuracy per class, followed by overall accuracy
-    for curr_class in range(0, num_class):
-        num_tp = cm[curr_class][curr_class] # True Positive Count
-        num_tn = 0
-        for tmp_gt in range(0, num_class):
-            for tmp_pred in range(0, num_class):
-                if tmp_gt != curr_class and tmp_pred != curr_class:
-                    num_tn += cm[tmp_gt][tmp_pred]
-
-        tmp_acc = (num_tn + num_tp)*100/cm.sum()
-        list_acc.append(tmp_acc)
-    
-    list_acc.append(cm.diagonal().sum()*100/cm.sum())
-    
-    return list_acc

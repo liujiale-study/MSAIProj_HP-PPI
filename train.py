@@ -8,7 +8,7 @@ import config as cfg
 import model as m
 import data_setup
 import util
-from sklearn.metrics import confusion_matrix, classification_report
+from sklearn.metrics import classification_report
 
 
 def main(args):
@@ -123,15 +123,17 @@ def main(args):
         # Number of evaluated data instances
         train_num_total_data_instances =  len(arr_train_ground_truths)
     
-        # Get Confusion Matrix
-        arr_train_cmatrix = confusion_matrix(arr_train_ground_truths, arr_train_preds)
-    
         # Compute average loss per test instance
         train_loss = total_train_loss / train_num_total_data_instances
     
-        # Compute Accuracy Scores
-        list_train_acc = util.get_list_acc(arr_train_cmatrix)
-                
+        # Get Classification Report
+        dict_train_classifi_report = classification_report(arr_train_ground_truths, arr_train_preds, 
+                                                               target_names=cfg.CLASSIFICATION_REPORT_CLASS_LABELS, output_dict=True, zero_division=0)
+        list_train_f1 = []
+        for label in cfg.CLASSIFICATION_REPORT_CLASS_LABELS:
+            list_train_f1.append(dict_train_classifi_report[label]["f1-score"])
+        train_acc = dict_train_classifi_report["accuracy"]*100
+        
         # Validation Loop
         
         # Vars for Recording Results
@@ -165,34 +167,30 @@ def main(args):
         # Number of evaluated data instances
         val_num_total_data_instances =  len(arr_val_ground_truth)
     
-        # Get Confusion Matrix
-        arr_val_cmatrix = confusion_matrix(arr_val_ground_truth, arr_val_preds)
-    
         # Compute average loss per evaluated data instance
         val_loss = total_val_loss / val_num_total_data_instances
-    
-        # Compute Accuracy Scores
-        list_val_acc = util.get_list_acc(arr_val_cmatrix)
         
         # Get Classification Report
-        dict_val_classification_report = classification_report(arr_val_ground_truth, arr_val_preds, 
+        dict_val_classifi_report = classification_report(arr_val_ground_truth, arr_val_preds, 
                                                                target_names=cfg.CLASSIFICATION_REPORT_CLASS_LABELS, output_dict=True, zero_division=0)
-        list_f1 = []
+        list_val_f1 = []
         for label in cfg.CLASSIFICATION_REPORT_CLASS_LABELS:
-            list_f1.append(dict_val_classification_report[label]["f1-score"])
+            list_val_f1.append(dict_val_classifi_report[label]["f1-score"])
+        val_acc = dict_val_classifi_report["accuracy"]*100
         
         last_val_classification_report = classification_report(arr_val_ground_truth, arr_val_preds, 
                                                                target_names=cfg.CLASSIFICATION_REPORT_CLASS_LABELS, zero_division=0, digits=6)
         
         
         # Print Results to Console
-        print(f"Epoch: {epoch:03d}, Train Loss: {train_loss:.4f}, Overall Train Acc: {list_train_acc[-1]:.2f}%")
-        print(f"Validation Loss: {val_loss:.4f}, Overall Acc: {list_val_acc[-1]:.2f}%")
+        print(f"Epoch: {epoch:03d}, Train Loss: {train_loss:.4f}, Overall Train Acc: {train_acc:.2f}%")
+        print(f"Validation Loss: {val_loss:.4f}, Overall Validation Acc: {val_acc:.2f}%")
         print("Classification Report on Validation Set: ")
         print(last_val_classification_report)
         
         # Update metric records
-        list_rec.append([epoch, train_loss] + list_train_acc + [val_loss] + list_val_acc + list_f1)
+        # Follow cfg.REC_COLUMNS format
+        list_rec.append([epoch, train_loss] + list_train_f1 + [train_acc, val_loss] + list_val_f1 + [val_acc])
         
         # Checkpoint every x epoch
         if epoch % cfg.CHKPOINT_EVERY_NUM_EPOCH == 0:

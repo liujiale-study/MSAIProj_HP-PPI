@@ -8,7 +8,7 @@ import config as cfg
 import model as m
 import data_setup
 import util
-from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.metrics import classification_report
 
 
 def main(args):
@@ -88,19 +88,13 @@ def main(args):
     # Number of data instances
     num_total_data_instances =  len(arr_ground_truths)
     
-    # Get Confusion Matrix
-    arr_confusion_matrix = confusion_matrix(arr_ground_truths, arr_preds)
-    
     # Compute average loss per test instance
     loss = total_loss / num_total_data_instances
-    
-    # Compute Accuracy Scores
-    list_acc = util.get_list_acc(arr_confusion_matrix)
     
     # Get classification report
     class_report = classification_report(arr_ground_truths, arr_preds, target_names=cfg.CLASSIFICATION_REPORT_CLASS_LABELS, zero_division=0, digits=6)
     
-    util.write_test_results(fpath_chkpoint_folder, loss, list_acc, class_report)
+    util.write_test_results(fpath_chkpoint_folder, loss, class_report)
         
         
         
