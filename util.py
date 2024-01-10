@@ -43,7 +43,11 @@ def save_checkpoint(epoch, model, optimizer, list_rec, is_train_finished=False):
                                              cfg.REC_COLNAME_VAL_ACC_CLASS_LOW, 
                                              cfg.REC_COLNAME_VAL_ACC_CLASS_INTERMEDIATE,
                                              cfg.REC_COLNAME_VAL_ACC_CLASS_HIGH,
-                                             cfg.REC_COLNAME_VAL_ACC_OVERALL])
+                                             cfg.REC_COLNAME_VAL_ACC_OVERALL,
+                                             cfg.REC_COLNAME_VAL_F1_CLASS_NON_INTERACTING,
+                                             cfg.REC_COLNAME_VAL_F1_CLASS_LOW, 
+                                             cfg.REC_COLNAME_VAL_F1_CLASS_INTERMEDIATE,
+                                             cfg.REC_COLNAME_VAL_F1_CLASS_HIGH])
     
     
     fpath_metric_results = os.path.join(fpath_chkpoint_folder, cfg.FNAME_METRIC_RESULT_CSV)

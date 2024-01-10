@@ -71,10 +71,10 @@ ADAMW_LR = 0.001
 ADAMW_WEIGHT_DECAY = 0.01
 
 # Number of Training Epochs
-NUM_EPOCHS = 20
+NUM_EPOCHS = 100
 
 # Cross Entropy Weights
-CROSS_ENTROPY_WEIGHTS = [0.01, 1, 1, 1]
+CROSS_ENTROPY_WEIGHTS = [0.001, 1, 1, 1]
 
 # =============================================
 
@@ -100,6 +100,13 @@ REC_COLNAME_VAL_ACC_CLASS_LOW = "Val. Acc. Low"
 REC_COLNAME_VAL_ACC_CLASS_INTERMEDIATE = "Val. Acc. Intermediate"
 REC_COLNAME_VAL_ACC_CLASS_HIGH = "Val. Acc. High"
 REC_COLNAME_VAL_ACC_OVERALL = "Val. Acc. Overall"
+REC_COLNAME_VAL_F1_CLASS_NON_INTERACTING = "Val F1 Non-Interacting"
+REC_COLNAME_VAL_F1_CLASS_LOW = "Val. F1 Low"
+REC_COLNAME_VAL_F1_CLASS_INTERMEDIATE = "Val. F1 Intermediate"
+REC_COLNAME_VAL_F1_CLASS_HIGH = "Val. F1 High"
+
+# Class Labels for Classification Report
+CLASSIFICATION_REPORT_CLASS_LABELS = ["Non-Interacting", "Low", "Intermediate", "High"]
 
 # Checkpoint Filenames
 FNAME_CHKPT_PTH = "checkpoint.pth"
@@ -116,5 +123,4 @@ CHKPT_FOLDER_NAME_FORMAT = "{timestamp}_epoch{num_epoch}"
 CHKPT_FOLDER_SUFFIX_FINISHED = "_fin"
 
 # Test Result Lines
-CLASSIFICATION_REPORT_CLASS_LABELS = ["Non-Interacting", "Low", "Intermediate", "High"]
 RESULT_ACC_LINES_BY_CLASS = ["Non-Interacting: ", "Low: ", "Intermediate: ", "High: ", "Avg. Over All Classes: "]

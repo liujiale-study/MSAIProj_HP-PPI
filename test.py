@@ -100,9 +100,9 @@ def main(args):
     list_acc = util.get_list_acc(arr_confusion_matrix)
     
     # Computes the average AUC of all possible pairwise combinations of classes
-    dict_classification_report = classification_report(arr_ground_truths, arr_preds, target_names=cfg.CLASSIFICATION_REPORT_CLASS_LABELS)
+    classification_report = classification_report(arr_ground_truths, arr_preds, target_names=cfg.CLASSIFICATION_REPORT_CLASS_LABELS)
     
-    util.write_test_results(fpath_chkpoint_folder, loss, list_acc, dict_classification_report)
+    util.write_test_results(fpath_chkpoint_folder, loss, list_acc, classification_report)
         
         
         

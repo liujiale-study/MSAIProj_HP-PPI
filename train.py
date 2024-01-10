@@ -8,7 +8,7 @@ import config as cfg
 import model as m
 import data_setup
 import util
-from sklearn.metrics import confusion_matrix
+from sklearn.metrics import confusion_matrix, classification_report
 
 
 def main(args):
@@ -173,12 +173,20 @@ def main(args):
         # Compute Accuracy Scores
         list_val_acc = util.get_list_acc(arr_val_cmatrix)
         
+        # Get Classification Report
+        dict_val_classification_report = classification_report(arr_val_ground_truth, arr_val_preds, 
+                                                               target_names=cfg.CLASSIFICATION_REPORT_CLASS_LABELS, output_dict=True, zero_division=0)
+        list_f1 = []
+        for label in cfg.CLASSIFICATION_REPORT_CLASS_LABELS:
+            list_f1.append(dict_val_classification_report[label]["f1-score"])
+        
+        
         # Print Results to Console
         print(f"Epoch: {epoch:03d}, Train Loss: {train_loss:.4f}, Overall Train Acc: {list_train_acc[-1]:.2f}%")
         print(f"Validation Loss: {val_loss:.4f}, Overall Acc: {list_val_acc[-1]:.2f}%")
         
         # Update metric records
-        list_rec.append([epoch, train_loss] + list_train_acc + [val_loss] + list_val_acc)
+        list_rec.append([epoch, train_loss] + list_train_acc + [val_loss] + list_val_acc + list_f1)
         
         # Checkpoint every x epoch
         if epoch % cfg.CHKPOINT_EVERY_NUM_EPOCH == 0:
