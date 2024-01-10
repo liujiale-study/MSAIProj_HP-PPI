@@ -62,39 +62,56 @@ MODEL_HIDDEN_NUM_CHNLS=64
 SUBGRAPH_NUM_NEIGHBOURS = [50,50] 
 
 # Batch Sizes
-TRAIN_BATCH_SIZE = 256
-VAL_BATCH_SIZE = 256
+TRAIN_BATCH_SIZE = 1024
+VAL_BATCH_SIZE = 1024
+TEST_BATCH_SIZE = 1024
 
 # (Training) Optimizer Params
 ADAMW_LR = 0.001
 ADAMW_WEIGHT_DECAY = 0.01
 
 # Number of Training Epochs
-NUM_EPOCHS = 20
+NUM_EPOCHS = 50
 
 # =============================================
 
 
 
-# === Checkpointing and Train/Val Output ===
+# === Checkpointing and Train/Val/Test Output ===
 
 # Checkpoint at Every X Epoch
 # Note: Program will save after final epoch
-CHKPOINT_EVERY_NUM_EPOCH = 3
+CHKPOINT_EVERY_NUM_EPOCH = 5
 
 # Training Record Datafram Column Names
-REC_COLNAME_EPOCH = "epoch"
-REC_COLNAME_TRAIN_LOSS = "train_loss"
-REC_COLNAME_TRAIN_ACC = "train_acc"
-REC_COLNAME_VAL_LOSS = "val_loss"
-REC_COLNAME_VAL_ACC = "val_acc"
-REC_COLNAME_VAL_ROCAUC = "val_roc_auc"
+REC_COLNAME_EPOCH = "Epoch"
+REC_COLNAME_TRAIN_LOSS = "Train Loss"
+REC_COLNAME_TRAIN_ACC_CLASS_NON_INTERACTING = "Train Acc. Non-Interacting"
+REC_COLNAME_TRAIN_ACC_CLASS_LOW = "Train Acc. Low"
+REC_COLNAME_TRAIN_ACC_CLASS_INTERMEDIATE = "Train Acc. Intermediate"
+REC_COLNAME_TRAIN_ACC_CLASS_HIGH = "Train Acc. High"
+REC_COLNAME_TRAIN_ACC_OVERALL = "Train Acc. Overall"
+REC_COLNAME_VAL_LOSS = "Val. Loss"
+REC_COLNAME_VAL_ACC_CLASS_NON_INTERACTING = "Val Acc. Non-Interacting"
+REC_COLNAME_VAL_ACC_CLASS_LOW = "Val. Acc. Low"
+REC_COLNAME_VAL_ACC_CLASS_INTERMEDIATE = "Val. Acc. Intermediate"
+REC_COLNAME_VAL_ACC_CLASS_HIGH = "Val. Acc. High"
+REC_COLNAME_VAL_ACC_OVERALL = "Val. Acc. Overall"
 
 # Checkpoint Filenames
 FNAME_CHKPT_PTH = "checkpoint.pth"
 FNAME_METRIC_RESULT_CSV = "metric_results.csv"
+FNAME_TEST_RESULT_TXT = "test_results.txt"
 
 # Checkpoint Dictionary Properties
 CHKPT_DICTKEY_EPOCH = "epoch"
 CHKPT_DICTKEY_MODEL_STATE = "model_state"
 CHKPT_DICTKEY_OPTIM_STATE = "optim_state"
+
+# Checkpoint Folder Name Format
+CHKPT_FOLDER_NAME_FORMAT = "{timestamp}_epoch{num_epoch}"
+CHKPT_FOLDER_SUFFIX_FINISHED = "_fin"
+
+# Test Result Lines
+CLASSIFICATION_REPORT_CLASS_LABELS = ["Non-Interacting", "Low", "Intermediate", "High"]
+RESULT_ACC_LINES_BY_CLASS = ["Non-Interacting: ", "Low: ", "Intermediate: ", "High: ", "Avg. Over All Classes: "]

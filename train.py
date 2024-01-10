@@ -1,5 +1,5 @@
 import argparse
-from torch_geometric.loader import LinkNeighborLoader
+from torch_geometric.loader import LinkNeighborLoader, ImbalancedSampler
 from torch_geometric import seed_everything
 import torch
 import tqdm
@@ -8,7 +8,7 @@ import config as cfg
 import model as m
 import data_setup
 import file_io
-from sklearn.metrics import roc_auc_score
+from sklearn.metrics import confusion_matrix
 
 
 def main(args):
@@ -17,7 +17,7 @@ def main(args):
     
     # Retrieve Data from files
     print("Retrieving Data...")
-    train_data, val_data, test_data, data_metadata = data_setup.get_train_val_test_data()
+    train_data, val_data, _, data_metadata = data_setup.get_train_val_test_data()
     
     # Define seed edges:
     train_edge_label_index = train_data[cfg.NODE_MOUSE, cfg.EDGE_INTERACT, cfg.NODE_VIRUS].edge_label_index
@@ -50,7 +50,7 @@ def main(args):
     )
     
     # Model Setup
-    model = m.HP_PPI_Prediction_Model(num_hidden_chnls=cfg.MODEL_HIDDEN_NUM_CHNLS, data_metadata=data_metadata)    
+    model = m.HP_PPI_Prediction_Model(data_metadata=data_metadata)    
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print(f"Device: '{device}'")
     model = model.to(device)
@@ -60,8 +60,9 @@ def main(args):
     # List for recording metric scores
     list_rec = []
     
-    # Setup Softmax for Evaluation Metrics
+    # Setup CrossEntropy/Softmax
     softmax = torch.nn.Softmax(dim=1)
+    cross_entropy = torch.nn.CrossEntropyLoss(weight=torch.tensor([0.001, 1, 1, 1]).to(device=device))
     
     # Load from checkpoint if any specified
     if args.cpfolder != None:
@@ -81,7 +82,12 @@ def main(args):
     for epoch in range(start_epoch, (cfg.NUM_EPOCHS + 1)):
         
         # Training Loop
-        total_train_loss = total_train_data_instances = total_train_corrects = 0
+        
+        # Vars for Recording Results
+        train_list_preds = []
+        train_list_ground_truths = []
+        total_train_loss = 0
+        
         model.train()
         for sampled_data in tqdm.tqdm(train_loader):
             
@@ -91,10 +97,11 @@ def main(args):
             # Input batch into model
             sampled_data.to(device)
             pred = model(sampled_data)
+            pred_classes = softmax(pred).argmax(dim=1)
 
             # Calculate Cross Entropy between Labels and Prediction
             ground_truth = sampled_data[cfg.NODE_MOUSE, cfg.EDGE_INTERACT, cfg.NODE_VIRUS].edge_label
-            loss = F.cross_entropy(pred, ground_truth)
+            loss = cross_entropy(pred, ground_truth)
 
             # Backpropagation
             loss.backward()
@@ -103,23 +110,39 @@ def main(args):
             # Record Loss and Data Instance Count
             num_data_instances = len(ground_truth)
             total_train_loss += float(loss) * num_data_instances
-            total_train_data_instances += num_data_instances
             
-            # Calculate accuracy
-            pred_indices = softmax(pred).argmax(dim=1)
-            total_train_corrects += (pred_indices == ground_truth).sum().item()
-            
-            
-        # Compute average training loss per supervision edge
-        train_loss = total_train_loss / total_train_data_instances
+            # Add prediction and ground truths to list
+            train_list_preds.append(pred_classes)
+            train_list_ground_truths.append(ground_truth)
         
-        # Compute accuracy
-        train_acc = total_train_corrects * 100 / total_train_data_instances
+        # Get 1D Arrays of Predictions and Ground Truth
+        arr_train_preds = torch.cat(train_list_preds, dim=0).cpu().numpy()
+        arr_train_ground_truths = torch.cat(train_list_ground_truths, dim=0).cpu().numpy()
+    
+        # Number of evaluated data instances
+        train_num_total_data_instances =  len(arr_train_ground_truths)
+    
+        # Get Confusion Matrix
+        arr_train_confusion_matrix = confusion_matrix(arr_train_ground_truths, arr_train_preds)
+    
+        # Compute average loss per test instance
+        train_loss = total_train_loss / train_num_total_data_instances
+    
+        # Compute Accuracy Scores
+        list_train_acc = [] # train accuracy per class, followed by overall accuracy
+        num_total_corrects = 0
+        for i in range (0, cfg.NUM_PREDICT_CLASSES):
+            list_train_acc.append(arr_train_confusion_matrix[i][i]*100/train_num_total_data_instances)
+            num_total_corrects = num_total_corrects + arr_train_confusion_matrix[i][i]
+        list_train_acc.append(num_total_corrects*100/train_num_total_data_instances)
+        
                 
         # Validation Loop
-        list_val_softmax_preds = []
-        list_val_ground_truths = []
-        total_val_loss = total_val_corrects = 0
+        
+        # Vars for Recording Results
+        val_list_preds = []
+        val_list_ground_truths = []
+        total_val_loss = 0
         
         model.eval()
         for sampled_data in tqdm.tqdm(val_loader):
@@ -127,7 +150,7 @@ def main(args):
                 # Input Batch into model
                 sampled_data.to(device)
                 pred = model(sampled_data)
-                sm_pred = softmax(pred)
+                pred_classes = softmax(pred).argmax(dim=1)
                 
                 # Calculate Cross Entropy between Labels and Prediction
                 ground_truth = sampled_data[cfg.NODE_MOUSE, cfg.EDGE_INTERACT, cfg.NODE_VIRUS].edge_label
@@ -136,33 +159,37 @@ def main(args):
                 # Record Loss
                 total_val_loss += float(loss) * len(ground_truth)
                 
-                # Calculate accuracy
-                pred_indices = sm_pred.argmax(dim=1)
-                total_val_corrects += (pred_indices == ground_truth).sum().item()
-                
-                # Add to arrays for ROC AUC Calculations
-                list_val_softmax_preds.append(sm_pred)
-                list_val_ground_truths.append(ground_truth)
-                        
-        list_val_softmax_preds = torch.cat(list_val_softmax_preds, dim=0).cpu().numpy()
-        list_val_ground_truths = torch.cat(list_val_ground_truths, dim=0).cpu().numpy()
+                # Add prediction and ground truths to list
+                val_list_preds.append(pred_classes)
+                val_list_ground_truths.append(ground_truth)
+              
+        # Get 1D Arrays of Predictions and Ground Truth                
+        arr_val_preds = torch.cat(val_list_preds, dim=0).cpu().numpy()
+        arr_val_ground_truth = torch.cat(val_list_ground_truths, dim=0).cpu().numpy()
         
-        # Computes the average AUC of all possible pairwise combinations of classes
-        val_roc_auc = roc_auc_score(list_val_ground_truths, list_val_softmax_preds, multi_class='ovo')
-        
-        # Compute average validation loss per validation edge
-        num_val_ground_truths = len(list_val_ground_truths)
-        val_loss = total_val_loss / num_val_ground_truths
-        
-        # Compute accuracy
-        val_acc = total_val_corrects * 100 / num_val_ground_truths
+        # Number of evaluated data instances
+        val_num_total_data_instances =  len(arr_val_ground_truth)
+    
+        # Get Confusion Matrix
+        arr_val_confusion_matrix = confusion_matrix(arr_val_ground_truth, arr_val_preds)
+    
+        # Compute average loss per evaluated data instance
+        val_loss = total_val_loss / val_num_total_data_instances
+    
+        # Compute Accuracy Scores
+        list_val_acc = [] # validation accuracy per class, followed by overall accuracy
+        num_total_corrects = 0
+        for i in range (0, cfg.NUM_PREDICT_CLASSES):
+            list_val_acc.append(arr_val_confusion_matrix[i][i]*100/val_num_total_data_instances)
+            num_total_corrects = num_total_corrects + arr_val_confusion_matrix[i][i]
+        list_val_acc.append(num_total_corrects*100/val_num_total_data_instances)
         
         # Print Results to Console
-        print(f"Epoch: {epoch:03d}, Train Loss: {train_loss:.4f}, Train Acc: {train_acc:.2f}%")
-        print(f"Validation Loss: {val_loss:.4f}, Acc: {val_acc:.2f}%, ROC-AUC: {val_roc_auc:.4f}")
+        print(f"Epoch: {epoch:03d}, Train Loss: {train_loss:.4f}, Overall Train Acc: {list_train_acc[-1]:.2f}%")
+        print(f"Validation Loss: {val_loss:.4f}, Overall Acc: {list_val_acc[-1]:.2f}%")
         
         # Update metric records
-        list_rec.append([epoch, train_loss, train_acc, val_loss, val_acc, val_roc_auc])
+        list_rec.append([epoch, train_loss] + list_train_acc + [val_loss] + list_val_acc)
         
         # Checkpoint every x epoch
         if epoch % cfg.CHKPOINT_EVERY_NUM_EPOCH == 0:

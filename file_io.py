@@ -4,6 +4,13 @@ import torch
 import config as cfg
 from datetime import datetime
 
+# Function for Saving Checkpoint
+# Arguments
+#   epoch: Current epoch number
+#   model: Model to save
+#   optimzer: Optimizer to save
+#   list_rec: Training/Validation results record, 1 entry per epoch (see dataframe setup below for format)
+#   is_train_finished: True/False to indicate training finished. If true, checkpoint foldername will have a special suffix
 def save_checkpoint(epoch, model, optimizer, list_rec, is_train_finished=False):
     # Ensure parent checkpoint folder exist
     if not os.path.isdir(cfg.PATH_CHECKPOINTS):
@@ -12,10 +19,10 @@ def save_checkpoint(epoch, model, optimizer, list_rec, is_train_finished=False):
     # current timestamp
     now = datetime.now()
     date_time_str = now.strftime("%Y%m%d_%H%M%S")
-    fname_chkptfolder = date_time_str + "_epoch" + str(epoch)
+    fname_chkptfolder = cfg.CHKPT_FOLDER_NAME_FORMAT.format(timestamp=date_time_str, num_epoch=epoch)
     
     if is_train_finished:
-        fname_chkptfolder += "_fin"
+        fname_chkptfolder += cfg.CHKPT_FOLDER_SUFFIX_FINISHED
 
     # Get checkpoint folder path
     fpath_chkpoint_folder = os.path.join(cfg.PATH_CHECKPOINTS, fname_chkptfolder)
@@ -25,8 +32,19 @@ def save_checkpoint(epoch, model, optimizer, list_rec, is_train_finished=False):
         os.mkdir(fpath_chkpoint_folder)
         
     # Convert metric records to dataframe and output to CSV
-    df_rec = pd.DataFrame(list_rec, columns=[cfg.REC_COLNAME_EPOCH, cfg.REC_COLNAME_TRAIN_LOSS, cfg.REC_COLNAME_TRAIN_ACC, 
-                               cfg.REC_COLNAME_VAL_LOSS, cfg.REC_COLNAME_VAL_ACC, cfg.REC_COLNAME_VAL_ROCAUC])
+    df_rec = pd.DataFrame(list_rec, columns=[cfg.REC_COLNAME_EPOCH, cfg.REC_COLNAME_TRAIN_LOSS, 
+                                             cfg.REC_COLNAME_TRAIN_ACC_CLASS_NON_INTERACTING,
+                                             cfg.REC_COLNAME_TRAIN_ACC_CLASS_LOW,
+                                             cfg.REC_COLNAME_TRAIN_ACC_CLASS_INTERMEDIATE,
+                                             cfg.REC_COLNAME_TRAIN_ACC_CLASS_HIGH,        
+                                             cfg.REC_COLNAME_TRAIN_ACC_OVERALL,                                  
+                                             cfg.REC_COLNAME_VAL_LOSS, 
+                                             cfg.REC_COLNAME_VAL_ACC_CLASS_NON_INTERACTING,
+                                             cfg.REC_COLNAME_VAL_ACC_CLASS_LOW, 
+                                             cfg.REC_COLNAME_VAL_ACC_CLASS_INTERMEDIATE,
+                                             cfg.REC_COLNAME_VAL_ACC_CLASS_HIGH,
+                                             cfg.REC_COLNAME_VAL_ACC_OVERALL])
+    
     
     fpath_metric_results = os.path.join(fpath_chkpoint_folder, cfg.FNAME_METRIC_RESULT_CSV)
     df_rec.to_csv(fpath_metric_results, index=False)
@@ -41,7 +59,9 @@ def save_checkpoint(epoch, model, optimizer, list_rec, is_train_finished=False):
     torch.save(dict_checkpoint, fpath_checkpoint)
 
 
-
+# Function for Loading Checkpoint
+# Arguments
+#   fpath_chkpoint_folder: Path to folder containing checkpoint
 def load_checkpoint(fpath_chkpoint_folder):
     # Load PTH file
     fpath_checkpoint = os.path.join(fpath_chkpoint_folder, cfg.FNAME_CHKPT_PTH)
@@ -58,4 +78,35 @@ def load_checkpoint(fpath_chkpoint_folder):
     list_rec = df_rec.values.tolist()
     
     return epoch, model_state_dict, optim_state_dict, list_rec
+
+# Function for writing test result to file
+# Arguments
+#   loss: Average loss per evaluated data instance
+#   list_acc: List of accuracy scores, arrange according to the same sequence as RESULT_LINES_BY_CLASS
+#   classification_report: Classification Report from sklearn.metrics.classification_report
+#   is_print_to_console: Print file contents to console too
+def write_test_results(fpath_chkpoint_folder, loss, list_acc, dict_classification_report, is_print_to_console=True):
+    fpath_test_result = os.path.join(fpath_chkpoint_folder, cfg.FNAME_TEST_RESULT_TXT)
+    
+    # Prepare lines to write
+    lines = []
+    lines.append("==== Losss ====")
+    lines.append("Test Loss:" + str(loss))
+    
+    lines.append("==== Accuracy ====")
+    for i in range(0, len(cfg.RESULT_ACC_LINES_BY_CLASS)):
+        lines.append(cfg.RESULT_ACC_LINES_BY_CLASS[i] + str(list_acc[i]) + "%")
+    lines.append("")    
+    
+    lines.append("==== Classification Report ====")
+    lines.append(str(dict_classification_report))
+    
+    # Write to file
+    with open(fpath_test_result, 'w') as f:
+        f.writelines(lines)
+        
+    # Print to console
+    if is_print_to_console:
+        for line in lines:
+            print(line)
     
