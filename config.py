@@ -127,6 +127,7 @@ assert len(CLASSIFICATION_REPORT_CLASS_LABELS) == NUM_PREDICT_CLASSES
 # Checkpoint Filenames
 FNAME_CHKPT_PTH = "checkpoint.pth"
 FNAME_METRIC_RESULT_CSV = "metric_results.csv"
+FNAME_VALIDATION_LAST_REPORT = "last_validationset_classification_report.txt"
 FNAME_TEST_RESULT_TXT = "test_results.txt"
 
 # Checkpoint Dictionary Properties

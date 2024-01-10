@@ -10,8 +10,9 @@ from datetime import datetime
 #   model: Model to save
 #   optimzer: Optimizer to save
 #   list_rec: Training/Validation results record, 1 entry per epoch (see dataframe setup below for format)
+#   last_val_classifi_report: Last classification report on validation set
 #   is_train_finished: True/False to indicate training finished. If true, checkpoint foldername will have a special suffix
-def save_checkpoint(epoch, model, optimizer, list_rec, is_train_finished=False):
+def save_checkpoint(epoch, model, optimizer, list_rec, last_val_classifi_report, is_train_finished=False):
     # Ensure parent checkpoint folder exist
     if not os.path.isdir(cfg.PATH_CHECKPOINTS):
         os.mkdir(cfg.PATH_CHECKPOINTS)
@@ -33,10 +34,16 @@ def save_checkpoint(epoch, model, optimizer, list_rec, is_train_finished=False):
         
     # Convert metric records to dataframe and output to CSV
     df_rec = pd.DataFrame(list_rec, columns=cfg.REC_COLUMNS)
-    
-    
     fpath_metric_results = os.path.join(fpath_chkpoint_folder, cfg.FNAME_METRIC_RESULT_CSV)
     df_rec.to_csv(fpath_metric_results, index=False)
+    
+    # Save last classification report
+    fpath_classifi_report = os.path.join(fpath_chkpoint_folder, cfg.FNAME_VALIDATION_LAST_REPORT)
+    lines=[]
+    lines.append("==== Classification Report ====")
+    lines.append(str(last_val_classifi_report))
+    with open(fpath_classifi_report, 'w') as f:
+        f.writelines(lines)
     
     # Store relevant checkpoint information to dictionary and output to PTH
     dict_checkpoint = {
@@ -74,7 +81,7 @@ def load_checkpoint(fpath_chkpoint_folder):
 #   list_acc: List of accuracy scores, arrange according to the same sequence as RESULT_LINES_BY_CLASS
 #   classification_report: Classification Report from sklearn.metrics.classification_report
 #   is_print_to_console: Print file contents to console too
-def write_test_results(fpath_chkpoint_folder, loss, list_acc, dict_classification_report, is_print_to_console=True):
+def write_test_results(fpath_chkpoint_folder, loss, list_acc, classifi_report, is_print_to_console=True):
     fpath_test_result = os.path.join(fpath_chkpoint_folder, cfg.FNAME_TEST_RESULT_TXT)
     
     # Prepare lines to write
@@ -88,7 +95,7 @@ def write_test_results(fpath_chkpoint_folder, loss, list_acc, dict_classificatio
     lines.append("")    
     
     lines.append("==== Classification Report ====")
-    lines.append(str(dict_classification_report))
+    lines.append(str(classifi_report))
     
     # Write to file
     with open(fpath_test_result, 'w') as f:
