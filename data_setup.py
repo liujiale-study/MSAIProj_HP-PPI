@@ -25,6 +25,9 @@ def get_train_val_test_data():
     
     edge_feat = torch.from_numpy(df_interactions[cfg.COLNAME_INTERACT_PROB].values).to(torch.float32)   
     edge_feat = torch.unsqueeze(edge_feat, 1)
+    
+    edge_labels = torch.from_numpy(df_interactions[cfg.COLNAME_LABEL].values).to(torch.uint8)
+
 
 
 
@@ -42,6 +45,9 @@ def get_train_val_test_data():
     
     # Add edge attributes
     data[cfg.NODE_MOUSE, cfg.EDGE_INTERACT, cfg.NODE_VIRUS].x = edge_feat
+    data[cfg.NODE_MOUSE, cfg.EDGE_INTERACT, cfg.NODE_VIRUS].edge_label = edge_labels
+    
+    
     # We also need to make sure to add the reverse edges from virus to mouse
     # in order to let a GNN be able to pass messages in both directions.
     # We can leverage the `T.ToUndirected()` transform for this from PyG:
@@ -72,18 +78,18 @@ def get_train_val_test_data():
     
 
 
-    # Ensure no negative edges added:
-    assert train_data[cfg.NODE_MOUSE, cfg.EDGE_INTERACT, cfg.NODE_VIRUS].edge_label.min() == 1
-    assert train_data[cfg.NODE_MOUSE, cfg.EDGE_INTERACT, cfg.NODE_VIRUS].edge_label.max() == 1
-    assert val_data[cfg.NODE_MOUSE, cfg.EDGE_INTERACT, cfg.NODE_VIRUS].edge_label.min() == 1
-    assert val_data[cfg.NODE_MOUSE, cfg.EDGE_INTERACT, cfg.NODE_VIRUS].edge_label.max() == 1
-    assert test_data[cfg.NODE_MOUSE, cfg.EDGE_INTERACT, cfg.NODE_VIRUS].edge_label.min() == 1
-    assert test_data[cfg.NODE_MOUSE, cfg.EDGE_INTERACT, cfg.NODE_VIRUS].edge_label.max() == 1
+    # Ensure all classes are added to each split
+    assert train_data[cfg.NODE_MOUSE, cfg.EDGE_INTERACT, cfg.NODE_VIRUS].edge_label.min() == 0
+    assert train_data[cfg.NODE_MOUSE, cfg.EDGE_INTERACT, cfg.NODE_VIRUS].edge_label.max() == cfg.NUM_PREDICT_CLASSES - 1
+    assert val_data[cfg.NODE_MOUSE, cfg.EDGE_INTERACT, cfg.NODE_VIRUS].edge_label.min() == 0
+    assert val_data[cfg.NODE_MOUSE, cfg.EDGE_INTERACT, cfg.NODE_VIRUS].edge_label.max() == cfg.NUM_PREDICT_CLASSES - 1
+    assert test_data[cfg.NODE_MOUSE, cfg.EDGE_INTERACT, cfg.NODE_VIRUS].edge_label.min() == 0
+    assert test_data[cfg.NODE_MOUSE, cfg.EDGE_INTERACT, cfg.NODE_VIRUS].edge_label.max() == cfg.NUM_PREDICT_CLASSES - 1
 
     # Set Edge Labels
-    train_data[cfg.NODE_MOUSE, cfg.EDGE_INTERACT, cfg.NODE_VIRUS].edge_label = get_edge_label(df_interactions, train_data[cfg.NODE_MOUSE, cfg.EDGE_INTERACT, cfg.NODE_VIRUS].edge_label_index)
-    val_data[cfg.NODE_MOUSE, cfg.EDGE_INTERACT, cfg.NODE_VIRUS].edge_label = get_edge_label(df_interactions, val_data[cfg.NODE_MOUSE, cfg.EDGE_INTERACT, cfg.NODE_VIRUS].edge_label_index)
-    test_data[cfg.NODE_MOUSE, cfg.EDGE_INTERACT, cfg.NODE_VIRUS].edge_label = get_edge_label(df_interactions, test_data[cfg.NODE_MOUSE, cfg.EDGE_INTERACT, cfg.NODE_VIRUS].edge_label_index)
+    # train_data[cfg.NODE_MOUSE, cfg.EDGE_INTERACT, cfg.NODE_VIRUS].edge_label = get_edge_label(df_interactions, train_data[cfg.NODE_MOUSE, cfg.EDGE_INTERACT, cfg.NODE_VIRUS].edge_label_index)
+    # val_data[cfg.NODE_MOUSE, cfg.EDGE_INTERACT, cfg.NODE_VIRUS].edge_label = get_edge_label(df_interactions, val_data[cfg.NODE_MOUSE, cfg.EDGE_INTERACT, cfg.NODE_VIRUS].edge_label_index)
+    # test_data[cfg.NODE_MOUSE, cfg.EDGE_INTERACT, cfg.NODE_VIRUS].edge_label = get_edge_label(df_interactions, test_data[cfg.NODE_MOUSE, cfg.EDGE_INTERACT, cfg.NODE_VIRUS].edge_label_index)
 
     # Print to Console for Checking Train/Val/Test Split
     # Size of Train edge_label = total number of edges * 0.7 (% of edges in training set) * 0.3 (% of training edges used for supervision)
@@ -109,18 +115,18 @@ def get_train_val_test_data():
 # Expected shape of edge_label_index tensor: (2, Number of edges), 
 #   where edge_label_index[cfg.INDEX_EDGE_LABEL_MID,:] are mIDs and edge_label_index[cfg.INDEX_EDGE_LABEL_VID,:]
 # Assumes all mID-vID pairs given in edge_label_index are in dataframe, and each mID-vID pair has a unique label
-def get_edge_label(df_interactions, edge_label_index):
+# def get_edge_label(df_interactions, edge_label_index):
 
-    arr_edge_label_index = edge_label_index.T.numpy()
-    df_edge_label_index = pd.DataFrame({cfg.COLNAME_MID: arr_edge_label_index[:, cfg.INDEX_EDGE_LABEL_MID], cfg.COLNAME_VID: arr_edge_label_index[:, cfg.INDEX_EDGE_LABEL_VID]})
-    df_merged = pd.merge(df_edge_label_index, df_interactions, how='left', left_on=[cfg.COLNAME_MID,cfg.COLNAME_VID], right_on = [cfg.COLNAME_MID,cfg.COLNAME_VID])
+#     arr_edge_label_index = edge_label_index.T.numpy()
+#     df_edge_label_index = pd.DataFrame({cfg.COLNAME_MID: arr_edge_label_index[:, cfg.INDEX_EDGE_LABEL_MID], cfg.COLNAME_VID: arr_edge_label_index[:, cfg.INDEX_EDGE_LABEL_VID]})
+#     df_merged = pd.merge(df_edge_label_index, df_interactions, how='left', left_on=[cfg.COLNAME_MID,cfg.COLNAME_VID], right_on = [cfg.COLNAME_MID,cfg.COLNAME_VID])
    
-    assert df_merged.isnull().values.any() == False
-    edge_labels = torch.t(torch.from_numpy(df_merged[cfg.COLNAME_LABEL].values)) 
+#     assert df_merged.isnull().values.any() == False
+#     edge_labels = torch.t(torch.from_numpy(df_merged[cfg.COLNAME_LABEL].values)) 
     
-    assert edge_labels.dim() == 1 
-    assert edge_labels.size(dim=0) == edge_label_index.size(dim=1)
+#     assert edge_labels.dim() == 1 
+#     assert edge_labels.size(dim=0) == edge_label_index.size(dim=1)
     
-    return edge_labels
+#     return edge_labels
 
 
