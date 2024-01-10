@@ -37,7 +37,6 @@ def main(args):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print(f"Device: '{device}'")
     model = model.to(device)
-    optimizer = torch.optim.AdamW(model.parameters(), lr=cfg.ADAMW_LR, weight_decay=cfg.ADAMW_WEIGHT_DECAY)
     
     # Setup Softmax for Evaluation Metrics
     softmax = torch.nn.Softmax(dim=1)
@@ -51,10 +50,9 @@ def main(args):
         fpath_chkpoint_folder = args.cpfolder
         print("Loading from Checkpoint Folder: " + fpath_chkpoint_folder)
         
-        _, model_state_dict, optim_state_dict, _ = util.load_checkpoint(fpath_chkpoint_folder)
+        _, model_state_dict, _, _ = util.load_checkpoint(fpath_chkpoint_folder)
 
-        model.load_state_dict(model_state_dict)
-        optimizer.load_state_dict(optim_state_dict)    
+        model.load_state_dict(model_state_dict) 
     
 
 
