@@ -73,10 +73,6 @@ ADAMW_WEIGHT_DECAY = 0.01
 # Number of Training Epochs
 NUM_EPOCHS = 100
 
-# Cross Entropy Weights
-CROSS_ENTROPY_WEIGHTS = [0.001, 1, 1, 1]
-assert len(CROSS_ENTROPY_WEIGHTS) == NUM_PREDICT_CLASSES
-
 # =============================================
 
 
@@ -96,7 +92,7 @@ REC_COLNAME_TRAIN_ACC_CLASS_INTERMEDIATE = "Train Acc. Intermediate"
 REC_COLNAME_TRAIN_ACC_CLASS_HIGH = "Train Acc. High"
 REC_COLNAME_TRAIN_ACC_OVERALL = "Train Acc. Overall"
 REC_COLNAME_VAL_LOSS = "Val. Loss"
-REC_COLNAME_VAL_ACC_CLASS_NON_INTERACTING = "Val Acc. Non-Interacting"
+REC_COLNAME_VAL_ACC_CLASS_NON_INTERACTING = "Val. Acc. Non-Interacting"
 REC_COLNAME_VAL_ACC_CLASS_LOW = "Val. Acc. Low"
 REC_COLNAME_VAL_ACC_CLASS_INTERMEDIATE = "Val. Acc. Intermediate"
 REC_COLNAME_VAL_ACC_CLASS_HIGH = "Val. Acc. High"

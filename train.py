@@ -1,5 +1,5 @@
 import argparse
-from torch_geometric.loader import LinkNeighborLoader, ImbalancedSampler
+from torch_geometric.loader import LinkNeighborLoader
 from torch_geometric import seed_everything
 import torch
 import tqdm
@@ -60,9 +60,9 @@ def main(args):
     # List for recording metric scores
     list_rec = []
     
-    # Setup CrossEntropy/Softmax
+    # Setup Softmax
     softmax = torch.nn.Softmax(dim=1)
-    cross_entropy = torch.nn.CrossEntropyLoss(weight=torch.tensor(cfg.CROSS_ENTROPY_WEIGHTS).to(device=device))
+
     
     # Load from checkpoint if any specified
     if args.cpfolder != None:
@@ -101,7 +101,7 @@ def main(args):
 
             # Calculate Cross Entropy between Labels and Prediction
             ground_truth = sampled_data[cfg.NODE_MOUSE, cfg.EDGE_INTERACT, cfg.NODE_VIRUS].edge_label
-            loss = cross_entropy(pred, ground_truth)
+            loss = F.cross_entropy(pred, ground_truth)
 
             # Backpropagation
             loss.backward()
