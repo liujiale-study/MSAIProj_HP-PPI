@@ -75,6 +75,7 @@ NUM_EPOCHS = 100
 
 # Cross Entropy Weights
 CROSS_ENTROPY_WEIGHTS = [0.001, 1, 1, 1]
+assert len(CROSS_ENTROPY_WEIGHTS) == NUM_PREDICT_CLASSES
 
 # =============================================
 
@@ -105,8 +106,27 @@ REC_COLNAME_VAL_F1_CLASS_LOW = "Val. F1 Low"
 REC_COLNAME_VAL_F1_CLASS_INTERMEDIATE = "Val. F1 Intermediate"
 REC_COLNAME_VAL_F1_CLASS_HIGH = "Val. F1 High"
 
+REC_COLUMNS = [REC_COLNAME_EPOCH, REC_COLNAME_TRAIN_LOSS, 
+                REC_COLNAME_TRAIN_ACC_CLASS_NON_INTERACTING,
+                REC_COLNAME_TRAIN_ACC_CLASS_LOW,
+                REC_COLNAME_TRAIN_ACC_CLASS_INTERMEDIATE,
+                REC_COLNAME_TRAIN_ACC_CLASS_HIGH,        
+                REC_COLNAME_TRAIN_ACC_OVERALL,                                  
+                REC_COLNAME_VAL_LOSS, 
+                REC_COLNAME_VAL_ACC_CLASS_NON_INTERACTING,
+                REC_COLNAME_VAL_ACC_CLASS_LOW, 
+                REC_COLNAME_VAL_ACC_CLASS_INTERMEDIATE,
+                REC_COLNAME_VAL_ACC_CLASS_HIGH,
+                REC_COLNAME_VAL_ACC_OVERALL,
+                REC_COLNAME_VAL_F1_CLASS_NON_INTERACTING,
+                REC_COLNAME_VAL_F1_CLASS_LOW, 
+                REC_COLNAME_VAL_F1_CLASS_INTERMEDIATE,
+                REC_COLNAME_VAL_F1_CLASS_HIGH]
+assert len(REC_COLUMNS) == 5 + NUM_PREDICT_CLASSES * 3
+
 # Class Labels for Classification Report
 CLASSIFICATION_REPORT_CLASS_LABELS = ["Non-Interacting", "Low", "Intermediate", "High"]
+assert len(CLASSIFICATION_REPORT_CLASS_LABELS) == NUM_PREDICT_CLASSES
 
 # Checkpoint Filenames
 FNAME_CHKPT_PTH = "checkpoint.pth"
@@ -124,3 +144,4 @@ CHKPT_FOLDER_SUFFIX_FINISHED = "_fin"
 
 # Test Result Lines
 RESULT_ACC_LINES_BY_CLASS = ["Non-Interacting: ", "Low: ", "Intermediate: ", "High: ", "Avg. Over All Classes: "]
+assert len(RESULT_ACC_LINES_BY_CLASS) - 1 == NUM_PREDICT_CLASSES

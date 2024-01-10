@@ -32,22 +32,7 @@ def save_checkpoint(epoch, model, optimizer, list_rec, is_train_finished=False):
         os.mkdir(fpath_chkpoint_folder)
         
     # Convert metric records to dataframe and output to CSV
-    df_rec = pd.DataFrame(list_rec, columns=[cfg.REC_COLNAME_EPOCH, cfg.REC_COLNAME_TRAIN_LOSS, 
-                                             cfg.REC_COLNAME_TRAIN_ACC_CLASS_NON_INTERACTING,
-                                             cfg.REC_COLNAME_TRAIN_ACC_CLASS_LOW,
-                                             cfg.REC_COLNAME_TRAIN_ACC_CLASS_INTERMEDIATE,
-                                             cfg.REC_COLNAME_TRAIN_ACC_CLASS_HIGH,        
-                                             cfg.REC_COLNAME_TRAIN_ACC_OVERALL,                                  
-                                             cfg.REC_COLNAME_VAL_LOSS, 
-                                             cfg.REC_COLNAME_VAL_ACC_CLASS_NON_INTERACTING,
-                                             cfg.REC_COLNAME_VAL_ACC_CLASS_LOW, 
-                                             cfg.REC_COLNAME_VAL_ACC_CLASS_INTERMEDIATE,
-                                             cfg.REC_COLNAME_VAL_ACC_CLASS_HIGH,
-                                             cfg.REC_COLNAME_VAL_ACC_OVERALL,
-                                             cfg.REC_COLNAME_VAL_F1_CLASS_NON_INTERACTING,
-                                             cfg.REC_COLNAME_VAL_F1_CLASS_LOW, 
-                                             cfg.REC_COLNAME_VAL_F1_CLASS_INTERMEDIATE,
-                                             cfg.REC_COLNAME_VAL_F1_CLASS_HIGH])
+    df_rec = pd.DataFrame(list_rec, columns=cfg.REC_COLUMNS)
     
     
     fpath_metric_results = os.path.join(fpath_chkpoint_folder, cfg.FNAME_METRIC_RESULT_CSV)
