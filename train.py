@@ -180,10 +180,15 @@ def main(args):
         for label in cfg.CLASSIFICATION_REPORT_CLASS_LABELS:
             list_f1.append(dict_val_classification_report[label]["f1-score"])
         
+        dict_val_classification_report = classification_report(arr_val_ground_truth, arr_val_preds, 
+                                                               target_names=cfg.CLASSIFICATION_REPORT_CLASS_LABELS, zero_division=0, digits=6)
+        
         
         # Print Results to Console
         print(f"Epoch: {epoch:03d}, Train Loss: {train_loss:.4f}, Overall Train Acc: {list_train_acc[-1]:.2f}%")
         print(f"Validation Loss: {val_loss:.4f}, Overall Acc: {list_val_acc[-1]:.2f}%")
+        print("Classification Report on Validation Set: ")
+        print(dict_val_classification_report)
         
         # Update metric records
         list_rec.append([epoch, train_loss] + list_train_acc + [val_loss] + list_val_acc + list_f1)
