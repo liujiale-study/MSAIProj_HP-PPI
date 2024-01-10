@@ -40,7 +40,7 @@ def save_checkpoint(epoch, model, optimizer, list_rec, last_val_classifi_report,
     # Save last classification report
     fpath_classifi_report = os.path.join(fpath_chkpoint_folder, cfg.FNAME_VALIDATION_LAST_REPORT)
     lines=[]
-    lines.append("==== Classification Report ====")
+    lines.append("==== Classification Report ====\n")
     lines.append(str(last_val_classifi_report))
     with open(fpath_classifi_report, 'w') as f:
         f.writelines(lines)
