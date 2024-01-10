@@ -21,9 +21,12 @@ class GNN(torch.nn.Module):
 
 
 class HP_PPI_Prediction_Model(torch.nn.Module):
-    def __init__(self, num_hidden_chnls, data_metadata):
+    def __init__(self, data_metadata):
         super().__init__()
+        # Set number of hidden channels
+        num_hidden_chnls = cfg.MODEL_HIDDEN_NUM_CHNLS
         
+        # Linear Layers for Downsampling
         self.mouse_lin = torch.nn.Linear(cfg.NUM_FEAT_MOUSE, num_hidden_chnls)
         self.virus_lin = torch.nn.Linear(cfg.NUM_FEAT_VIRUS, num_hidden_chnls)
         
