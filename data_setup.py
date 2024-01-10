@@ -57,6 +57,8 @@ def get_train_val_test_data():
     # print("Full data:")
     # print("==============")
     # print(data)
+    # print("Counts per Class")
+    # print(data[cfg.NODE_MOUSE, cfg.EDGE_INTERACT, cfg.NODE_VIRUS].edge_label.long().bincount().tolist())
 
 
     # === Train/Val/Test Split ===
