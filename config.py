@@ -25,7 +25,7 @@ NUM_FEAT_VIRUS = 2048       # Size of feature-vector for virus
 NUM_FEAT_INTERACTION = 1    # Size of feature-vector for interactions
 
 # Number of Classes in Model Prediction
-NUM_PREDICT_CLASSES = 3 
+NUM_PREDICT_CLASSES = 4 
 
 # Graph Node/Edge Names
 NODE_MOUSE = "mouse"
@@ -59,18 +59,18 @@ MODEL_HIDDEN_NUM_CHNLS=64
 # Index 1: Number of 2-hop neighbours to sample
 # ... etc.
 # Applies to each node per iteration
-SUBGRAPH_NUM_NEIGHBOURS = [20,10] 
+SUBGRAPH_NUM_NEIGHBOURS = [50,50] 
 
 # Batch Sizes
-TRAIN_BATCH_SIZE = 128
-VAL_BATCH_SIZE = 128
+TRAIN_BATCH_SIZE = 256
+VAL_BATCH_SIZE = 256
 
 # (Training) Optimizer Params
 ADAMW_LR = 0.001
 ADAMW_WEIGHT_DECAY = 0.01
 
 # Number of Training Epochs
-NUM_EPOCHS = 5
+NUM_EPOCHS = 20
 
 # =============================================
 
