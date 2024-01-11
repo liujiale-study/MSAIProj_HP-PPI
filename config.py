@@ -25,7 +25,7 @@ NUM_FEAT_VIRUS = 2048       # Size of feature-vector for virus
 NUM_FEAT_INTERACTION = 1    # Size of feature-vector for interactions
 
 # Number of Classes in Model Prediction
-NUM_PREDICT_CLASSES = 4 
+NUM_PREDICT_CLASSES = 3 
 
 # Graph Node/Edge Names
 NODE_MOUSE = "mouse"
@@ -99,13 +99,11 @@ REC_COLNAME_VAL_F1_CLASS_HIGH = "Val. F1 High"
 REC_COLNAME_VAL_ACC_OVERALL = "Val. Acc. Overall"
 
 REC_COLUMNS = [REC_COLNAME_EPOCH, REC_COLNAME_TRAIN_LOSS, 
-                REC_COLNAME_TRAIN_F1_CLASS_NON_INTERACTING,
                 REC_COLNAME_TRAIN_F1_CLASS_LOW,
                 REC_COLNAME_TRAIN_F1_CLASS_INTERMEDIATE,
                 REC_COLNAME_TRAIN_F1_CLASS_HIGH,        
                 REC_COLNAME_TRAIN_ACC_OVERALL,                                  
                 REC_COLNAME_VAL_LOSS, 
-                REC_COLNAME_VAL_F1_CLASS_NON_INTERACTING,
                 REC_COLNAME_VAL_F1_CLASS_LOW, 
                 REC_COLNAME_VAL_F1_CLASS_INTERMEDIATE,
                 REC_COLNAME_VAL_F1_CLASS_HIGH,
@@ -113,7 +111,7 @@ REC_COLUMNS = [REC_COLNAME_EPOCH, REC_COLNAME_TRAIN_LOSS,
 assert len(REC_COLUMNS) == 5 + NUM_PREDICT_CLASSES * 2
 
 # Class Labels for Classification Report
-CLASSIFICATION_REPORT_CLASS_LABELS = ["Non-Interacting", "Low", "Intermediate", "High"]
+CLASSIFICATION_REPORT_CLASS_LABELS = ["Low", "Intermediate", "High"]
 assert len(CLASSIFICATION_REPORT_CLASS_LABELS) == NUM_PREDICT_CLASSES
 
 # Checkpoint Filenames
@@ -130,7 +128,3 @@ CHKPT_DICTKEY_OPTIM_STATE = "optim_state"
 # Checkpoint Folder Name Format
 CHKPT_FOLDER_NAME_FORMAT = "{timestamp}_epoch{num_epoch}"
 CHKPT_FOLDER_SUFFIX_FINISHED = "_fin"
-
-# Test Result Lines
-RESULT_ACC_LINES_BY_CLASS = ["Non-Interacting: ", "Low: ", "Intermediate: ", "High: ", "Avg. Over All Classes: "]
-assert len(RESULT_ACC_LINES_BY_CLASS) - 1 == NUM_PREDICT_CLASSES
