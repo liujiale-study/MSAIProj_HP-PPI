@@ -81,6 +81,7 @@ def main(args):
     
     # Training Time Counter
     time_start = dt.now()
+    print("Training Start")
     
     # Loop through epochs
     for epoch in range(start_epoch, (cfg.NUM_EPOCHS + 1)):
@@ -198,15 +199,19 @@ def main(args):
         # Checkpoint every x epoch
         if epoch % cfg.CHKPOINT_EVERY_NUM_EPOCH == 0:
             util.save_checkpoint(epoch, model, optimizer, train_loader, list_rec, last_val_classification_report)
-        
-    # All Epochs Finished
-    # Save to checkpoint
-    print("Training Finished")
-    util.save_checkpoint(cfg.NUM_EPOCHS, model, optimizer, train_loader, list_rec, last_val_classification_report, True)
     
-    time_end = dt.now()
-    elapsed=time_end-time_start
-    print("Training Took: %02d:%02d:%02d:%02d" % (elapsed.days, elapsed.seconds // 3600, elapsed.seconds // 60 % 60, elapsed.seconds % 60))
+    if start_epoch <= cfg.NUM_EPOCHS:
+        # All Epochs Finished
+        # Save to checkpoint
+        print("Training Finished")
+        util.save_checkpoint(cfg.NUM_EPOCHS, model, optimizer, train_loader, list_rec, last_val_classification_report, True)
+        
+        time_end = dt.now()
+        elapsed=time_end-time_start
+        print("Elapsed Time (Epoch {start_epoch} to {end_epoch})".format(start_epoch=start_epoch, end_epoch=cfg.NUM_EPOCHS) 
+            + ": %02d:%02d:%02d:%02d" % (elapsed.days, elapsed.seconds // 3600, elapsed.seconds // 60 % 60, elapsed.seconds % 60))
+    else:
+        print("Error: Starting epoch higher than max. May have loaded from a checkpoint with epoch number >= total number of epochs.")
 
 
 

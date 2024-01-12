@@ -51,10 +51,13 @@ def save_checkpoint(epoch, model, optimizer, train_loader, list_rec, last_val_cl
         cfg.CHKPT_DICTKEY_EPOCH: epoch,
         cfg.CHKPT_DICTKEY_MODEL_STATE: model.state_dict(),
         cfg.CHKPT_DICTKEY_OPTIM_STATE: optimizer.state_dict(),
-        cfg.CHKPT_DICTKEY_TRAIN_LOADER: train_loader,
     }
     fpath_checkpoint = os.path.join(fpath_chkpoint_folder, cfg.FNAME_CHKPT_PTH)
     torch.save(dict_checkpoint, fpath_checkpoint)
+    
+    # Save train_loader as a seperate file
+    fpath_train_loader = os.path.join(fpath_chkpoint_folder, cfg.FNAME_TRAIN_LOADER_PT)
+    torch.save(train_loader, fpath_train_loader)
 
 
 # Function for Loading Checkpoint
@@ -69,11 +72,14 @@ def load_checkpoint(fpath_chkpoint_folder):
     fpath_metric_results = os.path.join(fpath_chkpoint_folder, cfg.FNAME_METRIC_RESULT_CSV)
     df_rec = pd.read_csv(fpath_metric_results)
     
+    # Path of Training DataLoader file
+    fpath_train_loader = os.path.join(fpath_chkpoint_folder, cfg.FNAME_TRAIN_LOADER_PT)
+    
     # Fill variables
     epoch = dict_checkpoint[cfg.CHKPT_DICTKEY_EPOCH]
     model_state_dict =  dict_checkpoint[cfg.CHKPT_DICTKEY_MODEL_STATE]
     optim_state_dict = dict_checkpoint[cfg.CHKPT_DICTKEY_OPTIM_STATE]
-    train_loader = dict_checkpoint[cfg.CHKPT_DICTKEY_TRAIN_LOADER]
+    train_loader = torch.load(fpath_train_loader)
     list_rec = df_rec.values.tolist()
     
     return epoch, model_state_dict, optim_state_dict, train_loader, list_rec
