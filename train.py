@@ -70,12 +70,11 @@ def main(args):
         fpath_chkpoint_folder = args.cpfolder
         print("Loading from Checkpoint Folder: " + fpath_chkpoint_folder)
         
-        chkpt_epoch, model_state_dict, optim_state_dict, chkpt_train_loader, chkpt_list_rec = util.load_checkpoint(fpath_chkpoint_folder)
+        chkpt_epoch, model_state_dict, optim_state_dict, chkpt_list_rec = util.load_checkpoint(fpath_chkpoint_folder)
 
         start_epoch = chkpt_epoch + 1
         model.load_state_dict(model_state_dict)
         optimizer.load_state_dict(optim_state_dict)
-        train_loader = chkpt_train_loader
         list_rec = chkpt_list_rec
     
     
@@ -197,12 +196,12 @@ def main(args):
         
         # Checkpoint every x epoch
         if epoch % cfg.CHKPOINT_EVERY_NUM_EPOCH == 0:
-            util.save_checkpoint(epoch, model, optimizer, train_loader, list_rec, last_val_classification_report)
+            util.save_checkpoint(epoch, model, optimizer, list_rec, last_val_classification_report)
         
     # All Epochs Finished
     # Save to checkpoint
     print("Training Finished")
-    util.save_checkpoint(cfg.NUM_EPOCHS, model, optimizer, train_loader, list_rec, last_val_classification_report, True)
+    util.save_checkpoint(cfg.NUM_EPOCHS, model, optimizer, list_rec, last_val_classification_report, True)
     
     time_end = dt.now()
     elapsed=time_end-time_start

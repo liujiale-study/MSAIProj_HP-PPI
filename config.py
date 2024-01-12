@@ -62,8 +62,8 @@ SUBGRAPH_NUM_NEIGHBOURS = [50,50]
 
 # Batch Sizes
 TRAIN_BATCH_SIZE = 1024
-VAL_BATCH_SIZE = 2048
-TEST_BATCH_SIZE = 2048
+VAL_BATCH_SIZE = 1024
+TEST_BATCH_SIZE = 1024
 
 # (Training) Optimizer Params
 ADAMW_LR = 0.001
@@ -80,7 +80,7 @@ NUM_EPOCHS = 100
 
 # Checkpoint at Every X Epoch
 # Note: Program will save after final epoch
-CHKPOINT_EVERY_NUM_EPOCH = 10
+CHKPOINT_EVERY_NUM_EPOCH = 5
 
 # Training Record Datafram Column Names
 REC_COLNAME_EPOCH = "Epoch"
@@ -123,7 +123,6 @@ FNAME_TEST_RESULT_TXT = "test_results.txt"
 CHKPT_DICTKEY_EPOCH = "epoch"
 CHKPT_DICTKEY_MODEL_STATE = "model_state"
 CHKPT_DICTKEY_OPTIM_STATE = "optim_state"
-CHKPT_DICTKEY_TRAIN_LOADER = "train_loader"
 
 # Checkpoint Folder Name Format
 CHKPT_FOLDER_NAME_FORMAT = "{timestamp}_epoch{num_epoch}"
