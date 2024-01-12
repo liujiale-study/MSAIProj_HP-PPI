@@ -4,12 +4,12 @@ from torch_geometric import seed_everything
 import torch
 import tqdm
 import torch.nn.functional as F
-import config as cfg
+from sklearn.metrics import classification_report
+from datetime import datetime as dt
 import model as m
 import data_setup
+import config as cfg
 import util
-from sklearn.metrics import classification_report
-
 
 def main(args):
     # Set Random Seed
@@ -78,7 +78,9 @@ def main(args):
         list_rec = chkpt_list_rec
     
     
-
+    # Training Time Counter
+    time_start = dt.now()
+    
     # Loop through epochs
     for epoch in range(start_epoch, (cfg.NUM_EPOCHS + 1)):
         
@@ -200,7 +202,10 @@ def main(args):
     # Save to checkpoint
     print("Training Finished")
     util.save_checkpoint(cfg.NUM_EPOCHS, model, optimizer, list_rec, last_val_classification_report, True)
-        
+    
+    time_end = dt.now()
+    elapsed=time_end-time_start
+    print("Training Took: %02d:%02d:%02d:%02d" % (elapsed.days, elapsed.seconds // 3600, elapsed.seconds // 60 % 60, elapsed.seconds % 60))
 
 
 
