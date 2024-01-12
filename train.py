@@ -76,10 +76,20 @@ def main(args):
         model.load_state_dict(model_state_dict)
         optimizer.load_state_dict(optim_state_dict)
         list_rec = chkpt_list_rec
+        
+        print("Skipping Past Batches on Training DataLoader....")
+        count_skipped_epochs = 0
+        count_skipped_batch = 0
+        for epoch in range(1, start_epoch):
+            for sampled_data in tqdm.tqdm(train_loader):
+                count_skipped_batch = count_skipped_batch + 1
+            count_skipped_epochs = count_skipped_epochs + 1
+        print("Skipped {count_epoch} epochs on Training Data Loader. Totalling {count_batch} batches.".format(count_epoch=count_skipped_epochs, count_batch=count_skipped_batch))
     
     
     # Training Time Counter
     time_start = dt.now()
+    print("Training Start")
     
     # Loop through epochs
     for epoch in range(start_epoch, (cfg.NUM_EPOCHS + 1)):
@@ -205,7 +215,8 @@ def main(args):
     
     time_end = dt.now()
     elapsed=time_end-time_start
-    print("Training Took: %02d:%02d:%02d:%02d" % (elapsed.days, elapsed.seconds // 3600, elapsed.seconds // 60 % 60, elapsed.seconds % 60))
+    print("Elapsed Time (Epoch {start_epoch} to {end_epoch})".format(start_epoch=start_epoch, end_epoch=cfg.NUM_EPOCHS) 
+          + ": %02d:%02d:%02d:%02d" % (elapsed.days, elapsed.seconds // 3600, elapsed.seconds // 60 % 60, elapsed.seconds % 60))
 
 
 
