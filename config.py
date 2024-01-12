@@ -52,8 +52,7 @@ INDEX_EDGE_LABEL_VID = 1
 # === Model Setup and Train/Val/Test Loop ===
 
 # Number of input channels for model's hidden layers
-MODEL_HIDDEN_NUM_CHNLS=64
-
+MODEL_HIDDEN_NUM_CHNLS=512
 # Subgraph Sampling
 # Index 0: Number of 1-hop neighbours to sample
 # Index 1: Number of 2-hop neighbours to sample

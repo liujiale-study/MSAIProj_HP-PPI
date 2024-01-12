@@ -8,14 +8,21 @@ import config as cfg
 class GNNResGatedGraphConv(torch.nn.Module):
     def __init__(self, num_hidden_chnls):
         super().__init__()
-
-        self.conv1 = ResGatedGraphConv(num_hidden_chnls, num_hidden_chnls, edge_dim=cfg.NUM_FEAT_INTERACTION)
-        self.conv2 = ResGatedGraphConv(num_hidden_chnls, num_hidden_chnls, edge_dim=cfg.NUM_FEAT_INTERACTION)
+        
+        # Graph Operator Layers Definition
+        self.graphOperator1 = ResGatedGraphConv(num_hidden_chnls, num_hidden_chnls, edge_dim=cfg.NUM_FEAT_INTERACTION)
+        self.graphOperator2 = ResGatedGraphConv(num_hidden_chnls, num_hidden_chnls, edge_dim=cfg.NUM_FEAT_INTERACTION)
+        
+        # Batch Norm Layers Definition
+        self.batchNorm1 = torch.nn.BatchNorm1d(num_hidden_chnls)
+        self.batchNorm2 = torch.nn.BatchNorm1d(num_hidden_chnls)
 
     def forward(self, x, edge_index, x_edge) -> torch.Tensor:        
-        x = self.conv1(x, edge_index, x_edge)
+        x = self.graphOperator1(x, edge_index, x_edge)
+        x = self.batchNorm1(x)
         x = F.relu(x)
-        x = self.conv2(x, edge_index, x_edge)
+        x = self.graphOperator2(x, edge_index, x_edge)
+        x = self.batchNorm2(x)
         x = F.relu(x)
         return x
 
@@ -40,12 +47,22 @@ class PPIVirulencePredictionModel(torch.nn.Module):
         self.classifer = torch.nn.Linear(num_hidden_chnls*2, cfg.NUM_PREDICT_CLASSES)
 
     def forward(self, data: HeteroData) -> torch.Tensor:
-                
+        
+        # Reduce number of mouse node features
+        x_mouse = self.mouse_lin(data[cfg.NODE_MOUSE].x)
+        x_mouse = F.relu(x_mouse)
+        
+        # Reduce number of virus node features
+        x_virus = self.virus_lin(data[cfg.NODE_VIRUS].x)
+        x_virus = F.relu(x_virus)
+
+        # Dictionary for Node features
         x_dict = {
-          cfg.NODE_MOUSE: self.mouse_lin(data[cfg.NODE_MOUSE].x),
-          cfg.NODE_VIRUS: self.virus_lin(data[cfg.NODE_VIRUS].x)
+          cfg.NODE_MOUSE: x_mouse,
+          cfg.NODE_VIRUS: x_virus
         }
         
+        # Dictionary for Edge Features
         x_edge = {
             (cfg.NODE_MOUSE, cfg.EDGE_INTERACT, cfg.NODE_VIRUS): data[cfg.NODE_MOUSE, cfg.EDGE_INTERACT, cfg.NODE_VIRUS].x,
             (cfg.NODE_VIRUS, cfg.REV_EDGE_INTERACT, cfg.NODE_MOUSE): data[cfg.NODE_VIRUS, cfg.REV_EDGE_INTERACT, cfg.NODE_MOUSE].x,
