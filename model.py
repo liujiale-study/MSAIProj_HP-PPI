@@ -5,7 +5,7 @@ import torch.nn.functional as F
 
 import config as cfg
 
-class GNN(torch.nn.Module):
+class GNNResGatedGraphConv(torch.nn.Module):
     def __init__(self, num_hidden_chnls):
         super().__init__()
 
@@ -20,7 +20,7 @@ class GNN(torch.nn.Module):
         return x
 
 
-class HP_PPI_Prediction_Model(torch.nn.Module):
+class PPIVirulencePredictionModel(torch.nn.Module):
     def __init__(self, data_metadata):
         super().__init__()
         # Set number of hidden channels
@@ -31,7 +31,7 @@ class HP_PPI_Prediction_Model(torch.nn.Module):
         self.virus_lin = torch.nn.Linear(cfg.NUM_FEAT_VIRUS, num_hidden_chnls)
         
         # Instantiate homogeneous GNN:
-        self.gnn = GNN(num_hidden_chnls)
+        self.gnn = GNNResGatedGraphConv(num_hidden_chnls)
 
         # Convert GNN model into a heterogeneous variant:
         self.gnn = to_hetero(self.gnn, metadata=data_metadata)
