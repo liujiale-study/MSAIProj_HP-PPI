@@ -9,10 +9,11 @@ from datetime import datetime
 #   epoch: Current epoch number
 #   model: Model to save
 #   optimzer: Optimizer to save
+#   train_loader: Training DataLoader to save
 #   list_rec: Training/Validation results record, 1 entry per epoch (see dataframe setup below for format)
 #   last_val_classifi_report: Last classification report on validation set
 #   is_train_finished: True/False to indicate training finished. If true, checkpoint foldername will have a special suffix
-def save_checkpoint(epoch, model, optimizer, list_rec, last_val_classifi_report, is_train_finished=False):
+def save_checkpoint(epoch, model, optimizer, train_loader, list_rec, last_val_classifi_report, is_train_finished=False):
     # Ensure parent checkpoint folder exist
     if not os.path.isdir(cfg.PATH_CHECKPOINTS):
         os.mkdir(cfg.PATH_CHECKPOINTS)
@@ -49,7 +50,8 @@ def save_checkpoint(epoch, model, optimizer, list_rec, last_val_classifi_report,
     dict_checkpoint = {
         cfg.CHKPT_DICTKEY_EPOCH: epoch,
         cfg.CHKPT_DICTKEY_MODEL_STATE: model.state_dict(),
-        cfg.CHKPT_DICTKEY_OPTIM_STATE: optimizer.state_dict()
+        cfg.CHKPT_DICTKEY_OPTIM_STATE: optimizer.state_dict(),
+        cfg.CHKPT_DICTKEY_TRAIN_LOADER: train_loader,
     }
     fpath_checkpoint = os.path.join(fpath_chkpoint_folder, cfg.FNAME_CHKPT_PTH)
     torch.save(dict_checkpoint, fpath_checkpoint)
@@ -71,9 +73,10 @@ def load_checkpoint(fpath_chkpoint_folder):
     epoch = dict_checkpoint[cfg.CHKPT_DICTKEY_EPOCH]
     model_state_dict =  dict_checkpoint[cfg.CHKPT_DICTKEY_MODEL_STATE]
     optim_state_dict = dict_checkpoint[cfg.CHKPT_DICTKEY_OPTIM_STATE]
+    train_loader = dict_checkpoint[cfg.CHKPT_DICTKEY_TRAIN_LOADER]
     list_rec = df_rec.values.tolist()
     
-    return epoch, model_state_dict, optim_state_dict, list_rec
+    return epoch, model_state_dict, optim_state_dict, train_loader, list_rec
 
 # Function for writing test result to file
 # Arguments
