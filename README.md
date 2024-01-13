@@ -30,7 +30,7 @@ Example: `python train.py -cpf checkpoints/20240113_024123_epoch100`
 
 ## About the Checkpoint Folders
 As mentioned above, checkpoint folders are generated inside the `checkpoints/` folder periodically. 
-Specifically, this happens once every 20 epochs.
+Specifically, this happens once every 10 epochs.
 
 The folders are labeled by timestamp and number of completed epochs. 
 For example `checkpoints/20240113_024123_epoch100/` folder is generated at 13 Jan 2024 at 02:41:23 after Epoch 100 in the training process.
