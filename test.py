@@ -50,7 +50,7 @@ def main(args):
         fpath_chkpoint_folder = args.cpfolder
         print("Loading from Checkpoint Folder: " + fpath_chkpoint_folder)
         
-        _, model_state_dict, _, _, _ = util.load_checkpoint(fpath_chkpoint_folder)
+        _, model_state_dict, _, _ = util.load_checkpoint(fpath_chkpoint_folder)
 
         model.load_state_dict(model_state_dict) 
     

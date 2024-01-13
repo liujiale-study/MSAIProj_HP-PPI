@@ -118,7 +118,7 @@ FNAME_CHKPT_PTH = "checkpoint.pth"
 FNAME_METRIC_RESULT_CSV = "metric_results.csv"
 FNAME_VALIDATION_LAST_REPORT = "last_validationset_classification_report.txt"
 FNAME_TEST_RESULT_TXT = "test_results.txt"
-FNAME_TRAIN_LOADER_PT = "train_loader.pt"
+
 
 # Checkpoint Dictionary Properties
 CHKPT_DICTKEY_EPOCH = "epoch"
