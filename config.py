@@ -70,7 +70,7 @@ ADAMW_LR = 0.001
 ADAMW_WEIGHT_DECAY = 0.01
 
 # Number of Training Epochs
-NUM_EPOCHS = 100
+NUM_EPOCHS = 200
 
 # =============================================
 
@@ -80,7 +80,7 @@ NUM_EPOCHS = 100
 
 # Checkpoint at Every X Epoch
 # Note: Program will save after final epoch
-CHKPOINT_EVERY_NUM_EPOCH = 10
+CHKPOINT_EVERY_NUM_EPOCH = 20
 
 # Training Record Datafram Column Names
 REC_COLNAME_EPOCH = "Epoch"
