@@ -22,7 +22,7 @@ python train.py
 ```
 The program will train the model for a total of 200 epochs.
 It will also periodically generate new checkpoint folders within the `checkpoints/` folder. 
-As the generated folder will contain the training DataLoader object, each generated checkpoint folder can be quite large (500 - 600MB).
+As the generated folders will each include a save of the training DataLoader object, the disk space they consume can be quite large (500 - 600MB per folder).
 Therefore, please ensure you have at least 12GB of free disk space before starting the training process.
 
 To resume training from a specific checkpoint, run the following command.
