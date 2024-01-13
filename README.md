@@ -45,7 +45,7 @@ The folder will contain:
   * Number of Completed Epochs (`dictionary key: epoch`)
   * Model's State Dictionary  (`dictionary key: model_state`)
   * Optimizer's State Dictionary (`dictionary key: optim_state`)
-* `last_validationset_classification_report.txt`: Classification report for the validation set on last completed epoch
+* `last_validationset_classification_report.txt`: Classification report for the model's performance validation set on last completed epoch
 * `metric_results.csv`: A running record of per-epoch results. For each epoch, the following information are available.
   * Average Train Loss
   * Per-Class F1 Score on Training Set
@@ -53,15 +53,16 @@ The folder will contain:
   * Average Validation Loss
   * Per-Class F1 Score on Validation Set
   * Overall Accuracy on Validation Set
-* `test_results.txt`: Only available if you have used the checkpoint to evaluate the trained model via the `test.py` script. The results from the evaluation on the test set will be printed to this file.  
+* `test_results.txt`: Only available if you have used the checkpoint to evaluate the trained model via the `test.py` script. This file contains a record of the model's performance on the test set.
 
 ## Evaluating on the Test Set
 To evaluate a trained model against the test set, run the following command.
 ```
 python test.py -cpf checkpoints/<name_of_your_checkpoint_folder>
 ```
-Example: You have completed an entire round of training and the program generated the final checkpoint folder `20240113_041818_epoch200_fin/` within the `checkpoints/` folder (i.e. full path to checkpoint folder is `checkpoints/20240113_041818_epoch200_fin/`).
+(Example)<br>
+You have completed an entire round of training and the program generated the final checkpoint folder `20240113_041818_epoch200_fin/` within the `checkpoints/` folder (i.e. full path to checkpoint folder is `checkpoints/20240113_041818_epoch200_fin/`).
 
-The command to evaluate that trained model will be `python test.py -cpf checkpoints/20240113_041818_epoch200_fin`
+The command to evaluate that trained model will be `python test.py -cpf checkpoints/20240113_041818_epoch200_fin`<br><br>
 
-After evaluation on test set is completed, the results will also be printed to a `test_results.txt` file. This file can be found in the checkpoint folder that was indicated when running the ``test.py`` script.
+After evaluation on test set is completed, the results seen on the console will also be printed to a `test_results.txt` file. This file can be found in the checkpoint folder that was indicated when running the above command.
