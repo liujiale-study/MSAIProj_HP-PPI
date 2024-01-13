@@ -80,7 +80,7 @@ NUM_EPOCHS = 200
 
 # Checkpoint at Every X Epoch
 # Note: Program will save after final epoch
-CHKPOINT_EVERY_NUM_EPOCH = 20
+CHKPOINT_EVERY_NUM_EPOCH = 10
 
 # Training Record Datafram Column Names
 REC_COLNAME_EPOCH = "Epoch"
