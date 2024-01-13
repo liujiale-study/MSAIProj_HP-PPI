@@ -5,7 +5,7 @@ In this project, we design and implement a model that is capable predicting the 
 We also curate a dataset for training and evaluating our model.
 
 ## Environment Setup
-Our project is built on a Python 3.9.18, with WSL2 as the system OS.
+Our project is built on a Python 3.9.18 environement, with WSL2 as the system OS.
 
 The Anaconda and PIP commands we used to setup our environment can be found in `EnvSetupCommands.txt`
 
