@@ -10,10 +10,15 @@ Our project is built on a Python 3.9.18 environement, with WSL2 as the system OS
 The Anaconda and PIP commands we used to setup our environment can be found in `EnvSetupCommands.txt`
 
 ## Adding the Dataset to the Data Folder
-Before training the model, the dataset files must first be in the `data/` folder.<br>
-(Data files To be update)
+Before training the model, the dataset files must first be in the `data/` folder.
 
-The program will perform train-validation-test split on this dataset at a ratio of 70-20-10.
+Unzip file `data.7z` and put its contents in the `data/` folder. <br>
+The following dataset files must be in the `data/` folder for the program to work.
+* `interaction_edges.csv`
+* `mouse_nodes.csv`
+* `virus_nodes.csv`
+
+Before training or evaluation, the program will perform train-validation-test split on this dataset at a ratio of 70-20-10.
 
 ## Training the Model
 To start training the model run:
