@@ -14,9 +14,9 @@ Before training the model, the dataset files must first be in the `data/` folder
 
 Unzip file `data.7z` and put its contents in the `data/` folder. <br>
 The following dataset files must be in the `data/` folder for the program to work.
-* `interaction_edges.csv`
-* `mouse_nodes.csv`
-* `virus_nodes.csv`
+* `mouse_proteins.csv`
+* `pp_interactions.csv`
+* `virus_proteins.csv`
 
 Before training or evaluation, the program will perform train-validation-test split on this dataset at a ratio of 70-20-10.
 
