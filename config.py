@@ -1,7 +1,7 @@
 # Data Paths
-PATH_VIRUS_FEAT = "./data/virus_nodes.csv"
-PATH_MOUSE_FEAT = "./data/mouse_nodes.csv"
-PATH_INTERACTIONS = "./data/interaction_edges.csv"
+PATH_VIRUS_FEAT = "./data/virus_proteins.csv"
+PATH_MOUSE_FEAT = "./data/mouse_proteins.csv"
+PATH_INTERACTIONS = "./data/pp_interactions.csv"
 PATH_CHECKPOINTS = "./checkpoints"
 
 # Global Random Seed
