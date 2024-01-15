@@ -12,7 +12,7 @@ The Anaconda and PIP commands we used to setup our environment can be found in `
 ## Adding the Dataset to the Data Folder
 Before training the model, the dataset files must first be in the `data/` folder.
 
-Download [data.7z](https://drive.google.com/file/d/14-blNX-A8Y_cuFcGMr7RhixJRrCdZzgZ/view?usp=sharing), unzip it and put its contents in the `data/` folder. <br>
+Download our zipped dataset file [[data.7z](https://drive.google.com/file/d/14-blNX-A8Y_cuFcGMr7RhixJRrCdZzgZ/view?usp=sharing)], unzip it and put its contents in the `data/` folder. <br>
 The following dataset files must be in the `data/` folder for the program to work.
 * `mouse_proteins.csv`
 * `pp_interactions.csv`
