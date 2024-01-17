@@ -50,7 +50,7 @@ def main(args):
     )
     
     # Model Setup
-    model = m.PPIVirulencePredictionModel(data_metadata=data_metadata, gnn_op_type=args.gnn_op_type)    
+    model = m.PPIVirulencePredictionModel(data_metadata=data_metadata, gnn_op_type=int(args.gnn_op_type))    
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print(f"Device: '{device}'")
     model = model.to(device)
