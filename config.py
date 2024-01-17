@@ -76,6 +76,8 @@ NUM_EPOCHS = 200
 # IDs must be unique among all operator types
 GNN_OP_ID_RESGATEDGRAPHCONV = 0 # Type ID for ResGatedGraphConv
 GNN_OP_ID_GAT = 1
+GNN_OP_ID_TRANSFORMERCONV = 2
+GNN_OP_ID_GINE = 3
 
 # The type that will be used by Default
 GNN_OP_DEFAULT = GNN_OP_ID_RESGATEDGRAPHCONV
@@ -83,7 +85,7 @@ GNN_OP_DEFAULT = GNN_OP_ID_RESGATEDGRAPHCONV
 # String names of GNN Operator
 # Use for printing to console or labeling checkpoint folders
 # Name of operator with ID 0 = this array's index 0, name of operator with ID 1 = this array's index 1, etc.
-GNN_OP_TYPE_NAMES = ["ResGatedGraphConv", "GAT"]
+GNN_OP_TYPE_NAMES = ["ResGatedGraphConv", "GAT", "GraphTransformer","GINE"]
 
 
 # =============================================

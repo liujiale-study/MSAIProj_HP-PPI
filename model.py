@@ -1,5 +1,5 @@
 import torch
-from torch_geometric.nn import ResGatedGraphConv, GATConv, to_hetero
+from torch_geometric.nn import ResGatedGraphConv, GATConv, TransformerConv, GINEConv, to_hetero
 from torch_geometric.data import HeteroData
 import torch.nn.functional as F
 
@@ -17,8 +17,14 @@ class GNNResGatedGraphConv(torch.nn.Module):
         elif gnn_op_type == cfg.GNN_OP_ID_GAT:
             self.graphOperator1 = GATConv(num_hidden_chnls, num_hidden_chnls, add_self_loops=False, edge_dim=cfg.NUM_FEAT_INTERACTION)
             self.graphOperator2 = GATConv(num_hidden_chnls, num_hidden_chnls, add_self_loops=False, edge_dim=cfg.NUM_FEAT_INTERACTION)
+        elif gnn_op_type == cfg.GNN_OP_ID_TRANSFORMERCONV:
+            self.graphOperator1 = TransformerConv(num_hidden_chnls, num_hidden_chnls, edge_dim=cfg.NUM_FEAT_INTERACTION)
+            self.graphOperator2 = TransformerConv(num_hidden_chnls, num_hidden_chnls, edge_dim=cfg.NUM_FEAT_INTERACTION)
+        elif gnn_op_type == cfg.GNN_OP_ID_GINE:
+            self.graphOperator1 = GINEConv(torch.nn.Sequential(torch.nn.Linear(num_hidden_chnls, num_hidden_chnls)), edge_dim=cfg.NUM_FEAT_INTERACTION)
+            self.graphOperator2 = GINEConv(torch.nn.Sequential(torch.nn.Linear(num_hidden_chnls, num_hidden_chnls)), edge_dim=cfg.NUM_FEAT_INTERACTION)
         else:
-            print("Error! Invalid GNN operator type ID specified: "+str(gnn_op_type) )
+            print("Error! Invalid GNN operator type ID specified: "+ str(gnn_op_type) )
             assert False
         
         
