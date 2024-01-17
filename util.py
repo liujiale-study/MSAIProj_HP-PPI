@@ -20,7 +20,8 @@ def save_checkpoint(epoch, model, optimizer, list_rec, last_val_classifi_report,
     # current timestamp
     now = datetime.now()
     date_time_str = now.strftime("%Y%m%d_%H%M%S")
-    fname_chkptfolder = cfg.CHKPT_FOLDER_NAME_FORMAT.format(timestamp=date_time_str, num_epoch=epoch)
+    str_gnn_op_type_name = cfg.GNN_OP_TYPE_NAMES[model.gnn_op_type]
+    fname_chkptfolder = cfg.CHKPT_FOLDER_NAME_FORMAT.format(timestamp=date_time_str, num_epoch=epoch, gnn_op_type=str_gnn_op_type_name)
     
     if is_train_finished:
         fname_chkptfolder += cfg.CHKPT_FOLDER_SUFFIX_FINISHED
@@ -49,6 +50,7 @@ def save_checkpoint(epoch, model, optimizer, list_rec, last_val_classifi_report,
     dict_checkpoint = {
         cfg.CHKPT_DICTKEY_EPOCH: epoch,
         cfg.CHKPT_DICTKEY_MODEL_STATE: model.state_dict(),
+        cfg.CHKPT_DICTKEY_MODEL_GNN_OP_TYPE: model.gnn_op_type,
         cfg.CHKPT_DICTKEY_OPTIM_STATE: optimizer.state_dict(),
     }
     fpath_checkpoint = os.path.join(fpath_chkpoint_folder, cfg.FNAME_CHKPT_PTH)
@@ -70,10 +72,11 @@ def load_checkpoint(fpath_chkpoint_folder):
     # Fill variables
     epoch = dict_checkpoint[cfg.CHKPT_DICTKEY_EPOCH]
     model_state_dict =  dict_checkpoint[cfg.CHKPT_DICTKEY_MODEL_STATE]
+    model_gnn_op_type = dict_checkpoint[cfg.CHKPT_DICTKEY_MODEL_GNN_OP_TYPE]
     optim_state_dict = dict_checkpoint[cfg.CHKPT_DICTKEY_OPTIM_STATE]
     list_rec = df_rec.values.tolist()
     
-    return epoch, model_state_dict, optim_state_dict, list_rec
+    return epoch, model_state_dict, model_gnn_op_type, optim_state_dict, list_rec
 
 # Function for writing test result to file
 # Arguments

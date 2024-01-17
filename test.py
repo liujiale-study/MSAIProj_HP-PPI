@@ -32,11 +32,9 @@ def main(args):
         shuffle=False,
     )
     
-    # Model Setup
-    model = m.PPIVirulencePredictionModel(data_metadata=data_metadata)    
+    # Device Setup
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print(f"Device: '{device}'")
-    model = model.to(device)
     
     # Setup Softmax for Evaluation Metrics
     softmax = torch.nn.Softmax(dim=1)
@@ -50,9 +48,11 @@ def main(args):
         fpath_chkpoint_folder = args.cpfolder
         print("Loading from Checkpoint Folder: " + fpath_chkpoint_folder)
         
-        _, model_state_dict, _, _ = util.load_checkpoint(fpath_chkpoint_folder)
+        _, model_state_dict, model_gnn_op_type, _, _ = util.load_checkpoint(fpath_chkpoint_folder)
 
-        model.load_state_dict(model_state_dict) 
+        model = m.PPIVirulencePredictionModel(data_metadata=data_metadata, gnn_op_type=model_gnn_op_type)    
+        model.load_state_dict(model_state_dict)
+        model.to(device)
     
 
 

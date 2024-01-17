@@ -72,6 +72,20 @@ ADAMW_WEIGHT_DECAY = 0.01
 # Number of Training Epochs
 NUM_EPOCHS = 200
 
+# Graph Neural Network Operator Types 
+# IDs must be unique among all operator types
+GNN_OP_ID_RESGATEDGRAPHCONV = 0 # Type ID for ResGatedGraphConv
+
+
+# The type that will be used by Default
+GNN_OP_DEFAULT = GNN_OP_ID_RESGATEDGRAPHCONV
+
+# String names of GNN Operator
+# Use for printing to console or labeling checkpoint folders
+# Name of operator with ID 0 = this array's index 0, name of operator with ID 1 = this array's index 1, etc.
+GNN_OP_TYPE_NAMES = ["ResGatedGraphConv"]
+
+
 # =============================================
 
 
@@ -124,7 +138,8 @@ FNAME_TEST_RESULT_TXT = "test_results.txt"
 CHKPT_DICTKEY_EPOCH = "epoch"
 CHKPT_DICTKEY_MODEL_STATE = "model_state"
 CHKPT_DICTKEY_OPTIM_STATE = "optim_state"
+CHKPT_DICTKEY_MODEL_GNN_OP_TYPE = "model_gnn_op_type"
 
 # Checkpoint Folder Name Format
-CHKPT_FOLDER_NAME_FORMAT = "{timestamp}_epoch{num_epoch}"
+CHKPT_FOLDER_NAME_FORMAT = "{timestamp}_epoch{num_epoch}_{gnn_op_type}"
 CHKPT_FOLDER_SUFFIX_FINISHED = "_fin"

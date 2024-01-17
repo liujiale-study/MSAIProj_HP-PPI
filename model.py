@@ -6,12 +6,17 @@ import torch.nn.functional as F
 import config as cfg
 
 class GNNResGatedGraphConv(torch.nn.Module):
-    def __init__(self, num_hidden_chnls):
+    def __init__(self, num_hidden_chnls, gnn_op_type):
         super().__init__()
         
-        # Graph Operator Layers Definition
-        self.graphOperator1 = ResGatedGraphConv(num_hidden_chnls, num_hidden_chnls, edge_dim=cfg.NUM_FEAT_INTERACTION)
-        self.graphOperator2 = ResGatedGraphConv(num_hidden_chnls, num_hidden_chnls, edge_dim=cfg.NUM_FEAT_INTERACTION)
+        # Graph Neural Network Operator Layers Definition
+        if gnn_op_type == cfg.GNN_OP_ID_RESGATEDGRAPHCONV:
+            self.graphOperator1 = ResGatedGraphConv(num_hidden_chnls, num_hidden_chnls, edge_dim=cfg.NUM_FEAT_INTERACTION)
+            self.graphOperator2 = ResGatedGraphConv(num_hidden_chnls, num_hidden_chnls, edge_dim=cfg.NUM_FEAT_INTERACTION)
+        else:
+            print("Error! Invalid GNN operator type specified.")
+            assert False
+        
         
         # Batch Norm Layers Definition
         self.batchNorm1 = torch.nn.BatchNorm1d(num_hidden_chnls)
@@ -28,7 +33,7 @@ class GNNResGatedGraphConv(torch.nn.Module):
 
 
 class PPIVirulencePredictionModel(torch.nn.Module):
-    def __init__(self, data_metadata):
+    def __init__(self, data_metadata, gnn_op_type=cfg.GNN_OP_DEFAULT):
         super().__init__()
         # Set number of hidden channels
         num_hidden_chnls = cfg.MODEL_HIDDEN_NUM_CHNLS
@@ -38,7 +43,8 @@ class PPIVirulencePredictionModel(torch.nn.Module):
         self.virus_lin = torch.nn.Linear(cfg.NUM_FEAT_VIRUS, num_hidden_chnls)
         
         # Instantiate homogeneous GNN:
-        self.gnn = GNNResGatedGraphConv(num_hidden_chnls)
+        self.gnn_op_type = gnn_op_type
+        self.gnn = GNNResGatedGraphConv(num_hidden_chnls, gnn_op_type)
 
         # Convert GNN model into a heterogeneous variant:
         self.gnn = to_hetero(self.gnn, metadata=data_metadata)
