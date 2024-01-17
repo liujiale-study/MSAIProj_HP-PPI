@@ -49,6 +49,8 @@ def main(args):
         print("Loading from Checkpoint Folder: " + fpath_chkpoint_folder)
         
         _, model_state_dict, model_gnn_op_type, _, _ = util.load_checkpoint(fpath_chkpoint_folder)
+        
+        print("Loaded model type: " + cfg.GNN_OP_TYPE_NAMES[model_gnn_op_type])
 
         model = m.PPIVirulencePredictionModel(data_metadata=data_metadata, gnn_op_type=model_gnn_op_type)    
         model.load_state_dict(model_state_dict)
