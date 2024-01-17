@@ -58,7 +58,7 @@ MODEL_HIDDEN_NUM_CHNLS=512
 # Index 1: Number of 2-hop neighbours to sample
 # ... etc.
 # Applies to each node per iteration
-SUBGRAPH_NUM_NEIGHBOURS = [50,50] 
+SUBGRAPH_NUM_NEIGHBOURS = [50,40,30] 
 
 # Batch Sizes
 TRAIN_BATCH_SIZE = 1024
@@ -70,7 +70,7 @@ ADAMW_LR = 0.001
 ADAMW_WEIGHT_DECAY = 0.01
 
 # Number of Training Epochs
-NUM_EPOCHS = 200
+NUM_EPOCHS = 100
 
 # Graph Neural Network Operator Types 
 # IDs must be unique among all operator types
