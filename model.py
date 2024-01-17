@@ -5,7 +5,7 @@ import torch.nn.functional as F
 
 import config as cfg
 
-class GNNResGatedGraphConv(torch.nn.Module):
+class GNN(torch.nn.Module):
     def __init__(self, num_hidden_chnls, gnn_op_type):
         super().__init__()
         
@@ -36,9 +36,13 @@ class GNNResGatedGraphConv(torch.nn.Module):
         x = self.graphOperator1(x, edge_index, x_edge)
         x = self.batchNorm1(x)
         x = F.relu(x)
+        x = F.dropout(x,training=self.training)
+        
         x = self.graphOperator2(x, edge_index, x_edge)
         x = self.batchNorm2(x)
         x = F.relu(x)
+        x = F.dropout(x,training=self.training)
+
         return x
 
 
@@ -54,7 +58,7 @@ class PPIVirulencePredictionModel(torch.nn.Module):
         
         # Instantiate homogeneous GNN:
         self.gnn_op_type = gnn_op_type
-        self.gnn = GNNResGatedGraphConv(num_hidden_chnls, gnn_op_type)
+        self.gnn = GNN(num_hidden_chnls, gnn_op_type)
 
         # Convert GNN model into a heterogeneous variant:
         self.gnn = to_hetero(self.gnn, metadata=data_metadata)
@@ -66,11 +70,9 @@ class PPIVirulencePredictionModel(torch.nn.Module):
         
         # Reduce number of mouse node features
         x_mouse = self.mouse_lin(data[cfg.NODE_MOUSE].x)
-        x_mouse = F.relu(x_mouse)
         
         # Reduce number of virus node features
         x_virus = self.virus_lin(data[cfg.NODE_VIRUS].x)
-        x_virus = F.relu(x_virus)
 
         # Dictionary for Node features
         x_dict = {
