@@ -58,7 +58,7 @@ MODEL_HIDDEN_NUM_CHNLS=512
 # Index 1: Number of 2-hop neighbours to sample
 # ... etc.
 # Applies to each node per iteration
-SUBGRAPH_NUM_NEIGHBOURS = [50,40,30] 
+SUBGRAPH_NUM_NEIGHBOURS = [50,50] 
 
 # Batch Sizes
 TRAIN_BATCH_SIZE = 1024
