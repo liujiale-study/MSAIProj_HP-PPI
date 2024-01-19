@@ -88,6 +88,9 @@ GNN_OP_DEFAULT = GNN_OP_ID_RESGATEDGRAPHCONV
 GNN_OP_TYPE_NAMES = ["ResGatedGraphConv", "GAT", "GraphTransformer","GINE"]
 
 
+# GAT Specific Config
+GAT_NUM_HEADS = 1
+
 # =============================================
 
 
