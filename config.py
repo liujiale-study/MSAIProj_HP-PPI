@@ -89,7 +89,7 @@ GNN_OP_TYPE_NAMES = ["ResGatedGraphConv", "GAT", "GraphTransformer","GINE"]
 
 
 # GAT Specific Config
-GAT_NUM_HEADS = 1
+GAT_NUM_HEADS = 4
 
 # =============================================
 

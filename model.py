@@ -15,8 +15,8 @@ class GNN(torch.nn.Module):
             self.graphOperator1 = ResGatedGraphConv(num_hidden_chnls, num_hidden_chnls, edge_dim=cfg.NUM_FEAT_INTERACTION)
             self.graphOperator2 = ResGatedGraphConv(num_hidden_chnls, num_hidden_chnls, edge_dim=cfg.NUM_FEAT_INTERACTION)
         elif gnn_op_type == cfg.GNN_OP_ID_GAT:
-            self.graphOperator1 = GATConv(num_hidden_chnls, num_hidden_chnls, heads=cfg.GAT_NUM_HEADS, add_self_loops=False, edge_dim=cfg.NUM_FEAT_INTERACTION)
-            self.graphOperator2 = GATConv(num_hidden_chnls, num_hidden_chnls, heads=cfg.GAT_NUM_HEADS, add_self_loops=False, edge_dim=cfg.NUM_FEAT_INTERACTION)
+            self.graphOperator1 = GATConv(num_hidden_chnls, num_hidden_chnls, heads=cfg.GAT_NUM_HEADS, concat=False, add_self_loops=False, edge_dim=cfg.NUM_FEAT_INTERACTION)
+            self.graphOperator2 = GATConv(num_hidden_chnls, num_hidden_chnls, heads=cfg.GAT_NUM_HEADS, concat=False, add_self_loops=False, edge_dim=cfg.NUM_FEAT_INTERACTION)
         elif gnn_op_type == cfg.GNN_OP_ID_TRANSFORMERCONV:
             self.graphOperator1 = TransformerConv(num_hidden_chnls, num_hidden_chnls, edge_dim=cfg.NUM_FEAT_INTERACTION)
             self.graphOperator2 = TransformerConv(num_hidden_chnls, num_hidden_chnls, edge_dim=cfg.NUM_FEAT_INTERACTION)
@@ -32,7 +32,7 @@ class GNN(torch.nn.Module):
         self.batchNorm1 = torch.nn.BatchNorm1d(num_hidden_chnls)
         self.batchNorm2 = torch.nn.BatchNorm1d(num_hidden_chnls)
 
-    def forward(self, x, edge_index, x_edge) -> torch.Tensor:                
+    def forward(self, x, edge_index, x_edge) -> torch.Tensor:
         x = self.graphOperator1(x, edge_index, x_edge)
         x = self.batchNorm1(x)
         x = F.relu(x)
