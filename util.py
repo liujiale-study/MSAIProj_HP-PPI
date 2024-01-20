@@ -12,8 +12,8 @@ from datetime import datetime
 #   list_rec: Training/Validation results record, 1 entry per epoch (see dataframe setup below for format)
 #   last_val_classifi_report: Last classification report on validation set
 #   is_train_finished: True/False to indicate training finished. If true, checkpoint foldername will have a special suffix
-#   bestmodel_state: Model state dictionary of best model
-#   bestmodel_epoch: Number of training epochs 
+#   bestmodel_state: Model state dictionary of best fit model
+#   bestmodel_epoch: Number of training epochs elasped by best fit model
 def save_checkpoint(epoch, model, optimizer, list_rec, last_val_classifi_report, bestmodel_state_dict, bestmodel_epoch, is_train_finished=False):
     # Ensure parent checkpoint folder exist
     if not os.path.isdir(cfg.PATH_CHECKPOINTS):
