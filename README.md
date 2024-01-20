@@ -21,7 +21,7 @@ The following dataset files must be in the `data/` folder for the program to wor
 Before training or evaluation, the program will perform train-validation-test split on this dataset at a ratio of 70-20-10.
 
 ## Training the Model
-The training script will train the model for 100 epochs.
+The training script will train the model for 150 epochs.
 During this time, the program will also record the best fit model based on loss on validation set.
 Periodically after a set number of epochs, both the current model (i.e. the model that is trained thus far) and the best fit model will be checkpointed, generating a checkpoint folder within the `checkpoints/` folder.
 
@@ -83,9 +83,9 @@ To evaluate checkpointed models against the test set, run the following command.
 python test.py -cpf checkpoints/<name_of_your_checkpoint_folder>
 ```
 (Example)<br>
-You have completed an entire round of training which lasted 100 epochs, and the program generated the final checkpoint folder `20240113_041818_epoch100_ResGatedGraphConv_fin/` within the `checkpoints/` folder (i.e. full path to checkpoint folder is `checkpoints/20240113_041818_epoch100_ResGatedGraphConv_fin/`).
+You have completed a full round of training which lasted 150 epochs, and the program generated the final checkpoint folder `20240113_041818_epoch150_ResGatedGraphConv_fin/` within the `checkpoints/` folder (i.e. full path to checkpoint folder is `checkpoints/20240113_041818_epoch150_ResGatedGraphConv_fin/`).
 
-To evaluate both the model at epoch 100 and the best fit model, run the command `python test.py -cpf checkpoints/20240113_041818_epoch100_ResGatedGraphConv_fin`<br><br>
+To evaluate both the model at epoch 150 and the best fit model, run the command `python test.py -cpf checkpoints/20240113_041818_epoch100_ResGatedGraphConv_fin`<br><br>
 
 After evaluation on test set is completed, the results will be printed to console, as well as the files `test_results_currmodel.txt` and `test_results_bestmodel.txt`.
 These files can be found in the checkpoint folder that was indicated when running the above command.
