@@ -51,7 +51,8 @@ def main(args):
     )
     
     # Model Setup
-    model = m.PPIVirulencePredictionModel(data_metadata=data_metadata, gnn_op_type=int(args.gnn_op_type))    
+    model_gnn_op_type = int(args.gnn_op_type)
+    model = m.PPIVirulencePredictionModel(data_metadata=data_metadata, gnn_op_type=model_gnn_op_type)    
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print(f"Device: '{device}'")
     model = model.to(device)
@@ -76,12 +77,11 @@ def main(args):
         fpath_chkpoint_folder = args.cpfolder
         print("Loading from Checkpoint Folder: " + fpath_chkpoint_folder)
         
-        chkpt_epoch, model_state_dict, model_gnn_op_type, optim_state_dict, chkpt_list_rec, chkpt_bestmodel_state, chkpt_bestmodel_epoch = util.load_checkpoint(fpath_chkpoint_folder)
-        
-        print("Loaded model type: " + cfg.GNN_OP_TYPE_NAMES[model_gnn_op_type])
+        chkpt_epoch, model_state_dict, chkpt_model_gnn_op_type, optim_state_dict, chkpt_list_rec, chkpt_bestmodel_state, chkpt_bestmodel_epoch = util.load_checkpoint(fpath_chkpoint_folder)
 
         # Restore variable values
         start_epoch = chkpt_epoch + 1
+        model_gnn_op_type = chkpt_model_gnn_op_type
         model = m.PPIVirulencePredictionModel(data_metadata=data_metadata, gnn_op_type=model_gnn_op_type)
         model.load_state_dict(model_state_dict)
         model.to(device)
@@ -99,10 +99,10 @@ def main(args):
             print("Skipped Epochs {curr_epoch}/{total_epochs_to_skip}".format(curr_epoch=epoch, total_epochs_to_skip=chkpt_epoch))
 
     
-    
     # Training Time Counter
     time_start = dt.now()
     print("Training Start")
+    print("Model type: " + cfg.GNN_OP_TYPE_NAMES[model_gnn_op_type])
     
     # Loop through epochs
     for epoch in range(start_epoch, (cfg.NUM_EPOCHS + 1)):
