@@ -4,6 +4,7 @@ from torch_geometric import seed_everything
 import torch
 import tqdm
 import torch.nn.functional as F
+import os
 import config as cfg
 import model as m
 import data_setup
@@ -36,8 +37,6 @@ def main(args):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print(f"Device: '{device}'")
     
-    # Setup Softmax for Evaluation Metrics
-    softmax = torch.nn.Softmax(dim=1)
     
     # Check for checkpoint folder to load from
     if args.cpfolder == None:
@@ -48,16 +47,35 @@ def main(args):
         fpath_chkpoint_folder = args.cpfolder
         print("Loading from Checkpoint Folder: " + fpath_chkpoint_folder)
         
-        _, model_state_dict, model_gnn_op_type, _, _ = util.load_checkpoint(fpath_chkpoint_folder)
+        currmodel_epoch, currmodel_state_dict, model_gnn_op_type, _, _, bestmodel_state_dict, bestmodel_epoch = util.load_checkpoint(fpath_chkpoint_folder)
         
         print("Loaded model type: " + cfg.GNN_OP_TYPE_NAMES[model_gnn_op_type])
 
-        model = m.PPIVirulencePredictionModel(data_metadata=data_metadata, gnn_op_type=model_gnn_op_type)    
-        model.load_state_dict(model_state_dict)
+        # Base Model Setup
+        model = m.PPIVirulencePredictionModel(data_metadata=data_metadata, gnn_op_type=model_gnn_op_type)
         model.to(device)
+        
+        # Load current model state dict and evaluate
+        model.load_state_dict(currmodel_state_dict)
+        currmodel_loss, currmodel_classifi_report = test_model(test_loader, model, device)
+        fpath_currmodel_test_result = os.path.join(fpath_chkpoint_folder, cfg.FNAME_TEST_RESULT_CURRMODEL_TXT)
+        str_currmodel_headerline =  "==== Current Model Results ===="
+        util.write_test_results(fpath_currmodel_test_result, str_currmodel_headerline, currmodel_epoch, currmodel_loss, currmodel_classifi_report)
+        print()
+        
+        # Load best model state dict and evaluate
+        model.load_state_dict(bestmodel_state_dict)
+        bestmodel_loss, bestmodel_classifi_report = test_model(test_loader, model, device)
+        fpath_currmodel_test_result = os.path.join(fpath_chkpoint_folder, cfg.FNAME_TEST_RESULT_BEST_MODEL_TXT)
+        str_bestmodel_headerline = "==== Best Model Results ===="
+        util.write_test_results(fpath_currmodel_test_result, str_bestmodel_headerline, bestmodel_epoch, bestmodel_loss, bestmodel_classifi_report)
+        
+        
+# Function to test a given model on training set
+def test_model(test_loader, model, device):
+    # Setup Softmax for Evaluation Metrics
+    softmax = torch.nn.Softmax(dim=1)
     
-
-
     # Vars for Recording Results
     list_preds = []
     list_ground_truths = []
@@ -96,7 +114,8 @@ def main(args):
     # Get classification report
     class_report = classification_report(arr_ground_truths, arr_preds, target_names=cfg.CLASSIFICATION_REPORT_CLASS_LABELS, zero_division=0, digits=6)
     
-    util.write_test_results(fpath_chkpoint_folder, loss, class_report)
+    return loss, class_report
+    
         
         
         

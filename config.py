@@ -136,14 +136,16 @@ assert len(CLASSIFICATION_REPORT_CLASS_LABELS) == NUM_PREDICT_CLASSES
 FNAME_CHKPT_PTH = "checkpoint.pth"
 FNAME_METRIC_RESULT_CSV = "metric_results.csv"
 FNAME_VALIDATION_LAST_REPORT = "last_validationset_classification_report.txt"
-FNAME_TEST_RESULT_TXT = "test_results.txt"
-
+FNAME_TEST_RESULT_CURRMODEL_TXT = "test_results_currmodel.txt"
+FNAME_TEST_RESULT_BEST_MODEL_TXT = "test_results_bestmodel.txt"
 
 # Checkpoint Dictionary Properties
 CHKPT_DICTKEY_EPOCH = "epoch"
 CHKPT_DICTKEY_MODEL_STATE = "model_state"
 CHKPT_DICTKEY_OPTIM_STATE = "optim_state"
 CHKPT_DICTKEY_MODEL_GNN_OP_TYPE = "model_gnn_op_type"
+CHKPT_DICTKEY_BESTMODEL_STATE_DICT = "bestmodel_state"
+CHKPT_DICTKEY_BESTMODEL_EPOCH = "bestmodel_epoch"
 
 # Checkpoint Folder Name Format
 CHKPT_FOLDER_NAME_FORMAT = "{timestamp}_epoch{num_epoch}_{gnn_op_type}"

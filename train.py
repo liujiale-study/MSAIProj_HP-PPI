@@ -10,6 +10,7 @@ import model as m
 import data_setup
 import config as cfg
 import util
+import copy
 
 def main(args):
     # Set Random Seed
@@ -61,6 +62,11 @@ def main(args):
     list_rec = []
     last_val_classification_report = None
     
+    # Record of best model
+    bestmodel_state = None
+    bestmodel_val_loss = 0
+    bestmodel_epoch = 0
+    
     # Setup Softmax
     softmax = torch.nn.Softmax(dim=1)
 
@@ -70,10 +76,11 @@ def main(args):
         fpath_chkpoint_folder = args.cpfolder
         print("Loading from Checkpoint Folder: " + fpath_chkpoint_folder)
         
-        chkpt_epoch, model_state_dict, model_gnn_op_type, optim_state_dict, chkpt_list_rec = util.load_checkpoint(fpath_chkpoint_folder)
+        chkpt_epoch, model_state_dict, model_gnn_op_type, optim_state_dict, chkpt_list_rec, chkpt_bestmodel_state, chkpt_bestmodel_epoch = util.load_checkpoint(fpath_chkpoint_folder)
         
         print("Loaded model type: " + cfg.GNN_OP_TYPE_NAMES[model_gnn_op_type])
 
+        # Restore variable values
         start_epoch = chkpt_epoch + 1
         model = m.PPIVirulencePredictionModel(data_metadata=data_metadata, gnn_op_type=model_gnn_op_type)
         model.load_state_dict(model_state_dict)
@@ -81,6 +88,9 @@ def main(args):
         optimizer.load_state_dict(optim_state_dict)
 
         list_rec = chkpt_list_rec
+        bestmodel_state = chkpt_bestmodel_state
+        bestmodel_epoch = chkpt_bestmodel_epoch
+        bestmodel_val_loss = list_rec[chkpt_bestmodel_epoch-1][cfg.REC_COLUMNS.index(cfg.REC_COLNAME_VAL_LOSS)]
         
         print("Skipping past epochs")
         for epoch in range(1, start_epoch):
@@ -207,15 +217,22 @@ def main(args):
         # Follow cfg.REC_COLUMNS format
         list_rec.append([epoch, train_loss] + list_train_f1 + [train_acc, val_loss] + list_val_f1 + [val_acc])
         
+        # Record best model
+        if (bestmodel_state == None) or val_loss < bestmodel_val_loss:
+            bestmodel_state = copy.deepcopy(model.state_dict())
+            bestmodel_val_loss = val_loss
+            bestmodel_epoch = epoch
+        
         # Checkpoint every x epoch
         if epoch % cfg.CHKPOINT_EVERY_NUM_EPOCH == 0:
-            util.save_checkpoint(epoch, model, optimizer, list_rec, last_val_classification_report)
+            util.save_checkpoint(epoch, model, optimizer, list_rec, last_val_classification_report, bestmodel_state, bestmodel_epoch)
+        
     
     if start_epoch <= cfg.NUM_EPOCHS:
         # All Epochs Finished
         # Save to checkpoint
         print("Training Finished")
-        util.save_checkpoint(cfg.NUM_EPOCHS, model, optimizer, list_rec, last_val_classification_report, True)
+        util.save_checkpoint(cfg.NUM_EPOCHS, model, optimizer, list_rec, last_val_classification_report, bestmodel_state, bestmodel_epoch, True)
         
         time_end = dt.now()
         elapsed=time_end-time_start
