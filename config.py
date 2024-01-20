@@ -70,7 +70,7 @@ ADAMW_LR = 0.001
 ADAMW_WEIGHT_DECAY = 0.01
 
 # Number of Training Epochs
-NUM_EPOCHS = 100
+NUM_EPOCHS = 150
 
 # Graph Neural Network Operator Types 
 # IDs must be unique among all operator types
