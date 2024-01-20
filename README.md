@@ -22,6 +22,8 @@ Before training or evaluation, the program will perform train-validation-test sp
 
 ## Training the Model
 The training script will train the model for 100 epochs.
+During this time, the program will also record the best fit model based on loss on validation set.
+Periodically after a set number of epochs, both the current model (i.e. the model that is trained thus far) and the best fit model will be checkpointed, generating a checkpoint folder within the `checkpoints/` folder.
 
 To start training the model using the default GNN operator (residual gated graph convolutional operator), simply run:
 ```
@@ -40,9 +42,10 @@ python train.py -g <ID_of_gnn_operator>
 ```
 Example: `python train.py -g 1` to train the model while it uses the graph attentional operator.
 
-The available GNN operators and their corresponding IDs are as follows.
+The available GNN operators and their corresponding IDs are as follows, alongside any key model parameters that do not use their default values.
 * [Residual Gated Graph Convolutional Operator (ResGatedGraphConv)](https://pytorch-geometric.readthedocs.io/en/latest/generated/torch_geometric.nn.conv.ResGatedGraphConv.html):`0` (default)
 * [Graph Attentional Operator (GAT)](https://pytorch-geometric.readthedocs.io/en/latest/generated/torch_geometric.nn.conv.GATConv.html): `1`
+  * `heads=4`, `concat=False`
 * [Graph Transformer Operator (GraphTransformer)](https://pytorch-geometric.readthedocs.io/en/latest/generated/torch_geometric.nn.conv.TransformerConv.html): `2`
 * [Graph Isomorphism Operator with Edge Features (GINE)](https://pytorch-geometric.readthedocs.io/en/latest/generated/torch_geometric.nn.conv.GINEConv.html): `3`
 
@@ -58,9 +61,11 @@ Additionally, checkpoints folders generated on training completion are append wi
 The folder will contain:
 * `checkpoint.pth`: Checkpoint file that stores a dictionary with the following information.
   * Number of Completed Epochs (`dictionary key: epoch`)
-  * Model's State Dictionary  (`dictionary key: model_state`)
+  * Current Model's State Dictionary  (`dictionary key: model_state`)
   * ID of the type of GNN operator used by the model (`dictionary key: model_gnn_op_type`)
   * Optimizer's State Dictionary (`dictionary key: optim_state`)
+  * State Dictionary of Best Fit Model  (`dictionary key: besmodel_state`)
+  * Epochs elapsed by Best Fit Model  (`dictionary key: bestmodel_epoch`)
 * `last_validationset_classification_report.txt`: Classification report for the model's performance validation set on last completed epoch
 * `metric_results.csv`: A running record of per-epoch results. For each epoch, the following information are available.
   * Average Train Loss
@@ -69,16 +74,18 @@ The folder will contain:
   * Average Validation Loss
   * Per-Class F1 Score on Validation Set
   * Overall Accuracy on Validation Set
-* `test_results.txt`: Only available if you have used the checkpoint to evaluate the trained model via the `test.py` script. This file contains a record of the model's performance on the test set.
+* `test_results_currmodel.txt`: Only available if you have evaluated the checkpointed models via the `test.py` script. This file contains a record of the current model's performance on the test set.
+* `test_results_bestmodel.txt`: Only available if you have evaluated the checkpointed models via the `test.py` script. This file contains a record of the best fit model's performance on the test set.
 
 ## Evaluating on the Test Set
-To evaluate a trained model against the test set, run the following command.
+To evaluate checkpointed models against the test set, run the following command.
 ```
 python test.py -cpf checkpoints/<name_of_your_checkpoint_folder>
 ```
 (Example)<br>
-You have completed an entire round of training and the program generated the final checkpoint folder `20240113_041818_epoch100_ResGatedGraphConv_fin/` within the `checkpoints/` folder (i.e. full path to checkpoint folder is `checkpoints/20240113_041818_epoch100_ResGatedGraphConv_fin/`).
+You have completed an entire round of training which lasted 100 epochs, and the program generated the final checkpoint folder `20240113_041818_epoch100_ResGatedGraphConv_fin/` within the `checkpoints/` folder (i.e. full path to checkpoint folder is `checkpoints/20240113_041818_epoch100_ResGatedGraphConv_fin/`).
 
-The command to evaluate that trained model will be `python test.py -cpf checkpoints/20240113_041818_epoch100_ResGatedGraphConv_fin`<br><br>
+To evaluate both the model at epoch 100 and the best fit model, run the command `python test.py -cpf checkpoints/20240113_041818_epoch100_ResGatedGraphConv_fin`<br><br>
 
-After evaluation on test set is completed, the results seen on the console will also be printed to a `test_results.txt` file. This file can be found in the checkpoint folder that was indicated when running the above command.
+After evaluation on test set is completed, the results will be printed to console, as well as the files `test_results_currmodel.txt` and `test_results_bestmodel.txt`.
+These files can be found in the checkpoint folder that was indicated when running the above command.
