@@ -43,7 +43,7 @@ python train.py -g <ID_of_gnn_operator>
 Example: `python train.py -g 1` to train the model while it uses the graph attentional operator.
 
 The available GNN operators and their corresponding IDs are as follows, alongside any key model parameters that do not use their default values.
-* [Residual Gated Graph Convolutional Operator (RGGC)](https://pytorch-geometric.readthedocs.io/en/latest/generated/torch_geometric.nn.conv.ResGatedGraphConv.html):`0` (default)
+* [Residual Gated Graph Convolutional Operator (RGGC)](https://pytorch-geometric.readthedocs.io/en/latest/generated/torch_geometric.nn.conv.ResGatedGraphConv.html):`0` (default operator)
 * [Graph Attentional Operator (GAT)](https://pytorch-geometric.readthedocs.io/en/latest/generated/torch_geometric.nn.conv.GATConv.html): `1`
   * `heads=4`, `concat=False`
 * [Graph Transformer Operator (GTR)](https://pytorch-geometric.readthedocs.io/en/latest/generated/torch_geometric.nn.conv.TransformerConv.html): `2`
