@@ -47,6 +47,7 @@ The available GNN operators and their corresponding IDs are as follows, alongsid
 * [Graph Attentional Operator (GAT)](https://pytorch-geometric.readthedocs.io/en/latest/generated/torch_geometric.nn.conv.GATConv.html): `1`
   * `heads=4`, `concat=False`
 * [Graph Transformer Operator (GTR)](https://pytorch-geometric.readthedocs.io/en/latest/generated/torch_geometric.nn.conv.TransformerConv.html): `2`
+  * `heads=5`, `concat=False`
 * [Graph Isomorphism Operator with Edge Features (GINE)](https://pytorch-geometric.readthedocs.io/en/latest/generated/torch_geometric.nn.conv.GINEConv.html): `3`
 
 ## About the Checkpoint Folders
