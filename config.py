@@ -92,7 +92,7 @@ GNN_OP_TYPE_NAMES = ["RGGC", "GAT", "GTR","GINE"]
 GAT_NUM_HEADS = 4
 
 # Graph Transformer Specific Config
-TRANSFORMER_NUM_HEADS = 2
+TRANSFORMER_NUM_HEADS = 5
 
 # =============================================
 
