@@ -34,7 +34,7 @@ To resume training from a specific checkpoint, run the following command.
 ```
 python train.py -cpf checkpoints/<name_of_your_checkpoint_folder>
 ```
-Example: `python train.py -cpf checkpoints/20240113_024123_epoch20_ResGatedGraphConv`
+Example: `python train.py -cpf checkpoints/20240113_024123_epoch20_RGGC`
 
 To train the model with a specific GNN operator, run the following command
 ```
@@ -43,10 +43,10 @@ python train.py -g <ID_of_gnn_operator>
 Example: `python train.py -g 1` to train the model while it uses the graph attentional operator.
 
 The available GNN operators and their corresponding IDs are as follows, alongside any key model parameters that do not use their default values.
-* [Residual Gated Graph Convolutional Operator (ResGatedGraphConv)](https://pytorch-geometric.readthedocs.io/en/latest/generated/torch_geometric.nn.conv.ResGatedGraphConv.html):`0` (default)
+* [Residual Gated Graph Convolutional Operator (RGGC)](https://pytorch-geometric.readthedocs.io/en/latest/generated/torch_geometric.nn.conv.ResGatedGraphConv.html):`0` (default)
 * [Graph Attentional Operator (GAT)](https://pytorch-geometric.readthedocs.io/en/latest/generated/torch_geometric.nn.conv.GATConv.html): `1`
   * `heads=4`, `concat=False`
-* [Graph Transformer Operator (GraphTransformer)](https://pytorch-geometric.readthedocs.io/en/latest/generated/torch_geometric.nn.conv.TransformerConv.html): `2`
+* [Graph Transformer Operator (GTR)](https://pytorch-geometric.readthedocs.io/en/latest/generated/torch_geometric.nn.conv.TransformerConv.html): `2`
 * [Graph Isomorphism Operator with Edge Features (GINE)](https://pytorch-geometric.readthedocs.io/en/latest/generated/torch_geometric.nn.conv.GINEConv.html): `3`
 
 ## About the Checkpoint Folders
@@ -54,7 +54,7 @@ As mentioned above, checkpoint folders are generated inside the `checkpoints/` f
 Specifically, this happens once every 10 epochs.
 
 The folders are labeled by timestamp, number of completed epochs and the type of GNN operator used. 
-For example, `checkpoints/20240113_024123_epoch20_ResGatedGraphConv/` folder is generated at 13 Jan 2024 at 02:41:23 after Epoch 20 in the training process, with the model using the residual gated graph convolutional operator.
+For example, `checkpoints/20240113_024123_epoch20_RGGC/` folder is generated at 13 Jan 2024 at 02:41:23 after Epoch 20 in the training process, with the model using the residual gated graph convolutional operator.
 
 Additionally, checkpoints folders generated on training completion are append with a `_fin` suffix.
 
@@ -83,9 +83,9 @@ To evaluate checkpointed models against the test set, run the following command.
 python test.py -cpf checkpoints/<name_of_your_checkpoint_folder>
 ```
 (Example)<br>
-You have completed a full round of training which lasted 150 epochs, and the program generated the final checkpoint folder `20240113_041818_epoch150_ResGatedGraphConv_fin/` within the `checkpoints/` folder (i.e. full path to checkpoint folder is `checkpoints/20240113_041818_epoch150_ResGatedGraphConv_fin/`).
+You have completed a full round of training which lasted 150 epochs, and the program generated the final checkpoint folder `20240113_041818_epoch150_RGGC_fin/` within the `checkpoints/` folder (i.e. path to checkpoint folder from the repo's top directory is `checkpoints/20240113_041818_epoch150_RGGC_fin/`).
 
-To evaluate both the model at epoch 150 and the best fit model, run the command `python test.py -cpf checkpoints/20240113_041818_epoch100_ResGatedGraphConv_fin`<br><br>
+To evaluate both the model at epoch 150 and the best fit model, run the command `python test.py -cpf checkpoints/20240113_041818_epoch100_RGGC_fin`<br><br>
 
 After evaluation on test set is completed, the results will be printed to console, as well as the files `test_results_currmodel.txt` and `test_results_bestmodel.txt`.
 These files can be found in the checkpoint folder that was indicated when running the above command.
