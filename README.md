@@ -49,6 +49,7 @@ The available GNN operators and their corresponding IDs are as follows, alongsid
 * [Graph Transformer Operator (GTR)](https://pytorch-geometric.readthedocs.io/en/latest/generated/torch_geometric.nn.conv.TransformerConv.html): `2`
   * `heads=5`, `concat=False`
 * [Graph Isomorphism Operator with Edge Features (GINE)](https://pytorch-geometric.readthedocs.io/en/latest/generated/torch_geometric.nn.conv.GINEConv.html): `3`
+  * `eps=0.0`, `train_eps=True`
 
 ## About the Checkpoint Folders
 As mentioned above, checkpoint folders are generated inside the `checkpoints/` folder periodically. 
