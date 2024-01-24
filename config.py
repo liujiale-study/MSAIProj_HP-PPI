@@ -85,14 +85,17 @@ GNN_OP_DEFAULT = GNN_OP_ID_RESGATEDGRAPHCONV
 # String names of GNN Operator
 # Use for printing to console or labeling checkpoint folders
 # Name of operator with ID 0 = this array's index 0, name of operator with ID 1 = this array's index 1, etc.
-GNN_OP_TYPE_NAMES = ["RGGC", "GAT", "GTR","GINE"]
+GNN_OP_TYPE_NAMES = ["RGGC", "GAT", "GTR", "GINE"]
 
 
-# GAT Specific Config
+# Graph Attentional Operator Specific Config
 GAT_NUM_HEADS = 4
 
-# Graph Transformer Specific Config
-TRANSFORMER_NUM_HEADS = 5
+# Graph Transformer Operator Specific Config
+GTR_NUM_HEADS = 5
+
+# Graph Isomorphism operator Specific Config
+GINE_TRAIN_EPS = True
 
 # =============================================
 
