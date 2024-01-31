@@ -90,16 +90,18 @@ def load_checkpoint(fpath_chkpoint_folder):
 #   str_headerline: First line to be printed in file
 #   loss: Average loss per evaluated data instance
 #   classification_report: Classification Report from sklearn.metrics.classification_report
+#   mcc:  Results' Matthews correlation coefficient
 #   is_print_to_console: Print file contents to console too
-def write_test_results(fpath_test_result, str_headerline, epoch, loss, classifi_report, is_print_to_console=True):
+def write_test_results(fpath_test_result, str_headerline, epoch, loss, classifi_report, mcc, is_print_to_console=True):
     
     # Prepare lines to write
     lines = []
     lines.append(str_headerline+"\n")
     lines.append("No. of Epochs Trained: " + str(epoch) + '\n')
     lines.append("\n")
-    lines.append("==== Loss ====\n")
+    lines.append("==== Measures ====\n")
     lines.append("Test Loss:" + str(loss) + '\n')
+    lines.append("Test MCC:" + str(mcc) + '\n')
     lines.append("\n")
     
     lines.append("==== Classification Report ====\n")

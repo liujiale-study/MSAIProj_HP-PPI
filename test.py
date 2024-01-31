@@ -9,7 +9,7 @@ import config as cfg
 import model as m
 import data_setup
 import util
-from sklearn.metrics import classification_report
+from sklearn.metrics import classification_report, matthews_corrcoef
 
 
 def main(args):
@@ -57,18 +57,18 @@ def main(args):
         
         # Load current model state dict and evaluate
         model.load_state_dict(currmodel_state_dict)
-        currmodel_loss, currmodel_classifi_report = test_model(test_loader, model, device)
+        currmodel_loss, currmodel_classifi_report, currmodel_mcc = test_model(test_loader, model, device)
         fpath_currmodel_test_result = os.path.join(fpath_chkpoint_folder, cfg.FNAME_TEST_RESULT_CURRMODEL_TXT)
         str_currmodel_headerline =  "==== Current Model Results ===="
-        util.write_test_results(fpath_currmodel_test_result, str_currmodel_headerline, currmodel_epoch, currmodel_loss, currmodel_classifi_report)
+        util.write_test_results(fpath_currmodel_test_result, str_currmodel_headerline, currmodel_epoch, currmodel_loss, currmodel_classifi_report, currmodel_mcc)
         print()
         
         # Load best model state dict and evaluate
         model.load_state_dict(bestmodel_state_dict)
-        bestmodel_loss, bestmodel_classifi_report = test_model(test_loader, model, device)
+        bestmodel_loss, bestmodel_classifi_report, bestmodel_mcc = test_model(test_loader, model, device)
         fpath_currmodel_test_result = os.path.join(fpath_chkpoint_folder, cfg.FNAME_TEST_RESULT_BEST_MODEL_TXT)
         str_bestmodel_headerline = "==== Best Model Results ===="
-        util.write_test_results(fpath_currmodel_test_result, str_bestmodel_headerline, bestmodel_epoch, bestmodel_loss, bestmodel_classifi_report)
+        util.write_test_results(fpath_currmodel_test_result, str_bestmodel_headerline, bestmodel_epoch, bestmodel_loss, bestmodel_classifi_report, bestmodel_mcc)
         
         
 # Function to test a given model on training set
@@ -114,7 +114,10 @@ def test_model(test_loader, model, device):
     # Get classification report
     class_report = classification_report(arr_ground_truths, arr_preds, target_names=cfg.CLASSIFICATION_REPORT_CLASS_LABELS, zero_division=0, digits=6)
     
-    return loss, class_report
+    # Get Matthews Correlation
+    mcc = matthews_corrcoef(arr_ground_truths, arr_preds)
+    
+    return loss, class_report, mcc
     
         
         
