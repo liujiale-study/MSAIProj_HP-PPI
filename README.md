@@ -76,8 +76,13 @@ The folder will contain:
   * Average Validation Loss
   * Per-Class F1 Score on Validation Set
   * Overall Accuracy on Validation Set
-* `test_results_currmodel.txt`: Only available if you have evaluated the checkpointed models via the `test.py` script. This file contains a record of the current model's performance on the test set.
+* `test_results_currmodel.txt`: Only available if you have evaluated the checkpointed models via the `test.py` script. This file contains a record of the current model's performance on the test set with the following information.
+  * Number of Training Epochs the Model Underwent
+  * Average Test Loss
+  * Matthews Correlation Coefficient
+  * [Classification Report](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.classification_report.html)
 * `test_results_bestmodel.txt`: Only available if you have evaluated the checkpointed models via the `test.py` script. This file contains a record of the best fit model's performance on the test set.
+  * Uses the same set of information as `test_results_currmodel.txt`.
 
 ## Evaluating on the Test Set
 To evaluate checkpointed models against the test set, run the following command.
