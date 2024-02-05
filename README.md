@@ -83,6 +83,7 @@ The folder will contain:
   * [Classification Report](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.classification_report.html)
 * `test_results_bestmodel.txt`: Only available if you have evaluated the checkpointed models via the `test.py` script. This file contains a record of the best fit model's performance on the test set.
   * Has the same set of information as `test_results_currmodel.txt`.
+* `supervision_edge_intermediate_rep_bestmodel.csv`: Only available if you executed `check_intermediate_rep.py` script using the checkpoint. This CSV files contains the intermediate representations of the first batch of supervision/evaluation edges from the test data loader. The first line of this CSV file are headers that corresponds to column indexes of the representation.
 
 ## Evaluating on the Test Set
 To evaluate checkpointed models against the test set, run the following command.
@@ -96,3 +97,10 @@ To evaluate both the model at epoch 150 and the best fit model, run the command 
 
 After evaluation on test set is completed, the results will be printed to console, as well as the files `test_results_currmodel.txt` and `test_results_bestmodel.txt`.
 These files can be found in the checkpoint folder that was indicated when running the above command.
+
+## Output Intermediate Representations for Supervision Edges
+The following script will use the checkpoint's best model to output the intermediate representations of the first batch of supervision/evaluation edges from the test data loader.
+```
+python check_intermediate_rep.py -cpf checkpoints/<name_of_your_checkpoint_folder>
+```
+Example: `python check_intermediate_rep.py -cpf checkpoints/20240123_165556_epoch150_GTR_fin`
