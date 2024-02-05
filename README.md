@@ -104,3 +104,5 @@ The following script will use the checkpoint's best model to output the intermed
 python check_intermediate_rep.py -cpf checkpoints/<name_of_your_checkpoint_folder>
 ```
 Example: `python check_intermediate_rep.py -cpf checkpoints/20240123_165556_epoch150_GTR_fin`
+
+The intermediate representations will be output to file `supervision_edge_intermediate_rep_bestmodel.csv` in the checkpoint folder indicated in the above command.
