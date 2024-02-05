@@ -47,7 +47,7 @@ class GNN(torch.nn.Module):
 
 
 class PPIVirulencePredictionModel(torch.nn.Module):
-    def __init__(self, data_metadata, gnn_op_type=cfg.GNN_OP_DEFAULT):
+    def __init__(self, data_metadata, gnn_op_type=cfg.GNN_OP_DEFAULT, is_output_intermediate_rep=False):
         super().__init__()
         # Set number of hidden channels
         num_hidden_chnls = cfg.MODEL_HIDDEN_NUM_CHNLS
@@ -65,6 +65,9 @@ class PPIVirulencePredictionModel(torch.nn.Module):
 
         # Classification head
         self.classifer = torch.nn.Linear(num_hidden_chnls*2, cfg.NUM_PREDICT_CLASSES)
+        
+        # Store flag for outputting intermediate representations
+        self.is_output_intermediate_rep = is_output_intermediate_rep
 
     def forward(self, data: HeteroData) -> torch.Tensor:
         
@@ -103,5 +106,8 @@ class PPIVirulencePredictionModel(torch.nn.Module):
         
         out = self.classifer(edge_embed)
 
-        return out
+        if self.is_output_intermediate_rep:
+            return out, edge_embed
+        else:
+            return out
 
