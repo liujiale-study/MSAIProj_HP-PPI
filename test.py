@@ -1,3 +1,7 @@
+# <<Test Script>>
+# Execute this file with a specified checkpoint folder to evaluate the checkpointed model on the test set.
+
+
 import argparse
 from torch_geometric.loader import LinkNeighborLoader
 from torch_geometric import seed_everything

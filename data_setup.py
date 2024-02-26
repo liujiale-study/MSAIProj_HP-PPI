@@ -1,3 +1,6 @@
+# <<Data Setup Script>>
+# This file contains contains functions for loading the dataset from file to train, validation and test sets' data objects.
+
 import pandas as pd
 import torch
 import numpy as np
@@ -5,7 +8,7 @@ import config as cfg
 from torch_geometric.data import HeteroData
 import torch_geometric.transforms as T
 
-# === Main Function ===
+# === Main Data Retrieval Function ===
 def get_train_val_test_data():
     
     # === Read Data from File ===

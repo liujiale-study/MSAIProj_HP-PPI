@@ -1,3 +1,6 @@
+# <<Util Script>>
+# This file contains utility functions that can be used in other parts of the program.
+
 import os
 import pandas as pd
 import torch
@@ -11,9 +14,9 @@ from datetime import datetime
 #   optimzer: Optimizer to save
 #   list_rec: Training/Validation results record, 1 entry per epoch (see dataframe setup below for format)
 #   last_val_classifi_report: Last classification report on validation set
-#   is_train_finished: True/False to indicate training finished. If true, checkpoint foldername will have a special suffix
 #   bestmodel_state: Model state dictionary of best fit model
 #   bestmodel_epoch: Number of training epochs elasped by best fit model
+#   is_train_finished: True/False to indicate training finished. If true, checkpoint foldername will have a special suffix
 def save_checkpoint(epoch, model, optimizer, list_rec, last_val_classifi_report, bestmodel_state_dict, bestmodel_epoch, is_train_finished=False):
     # Ensure parent checkpoint folder exist
     if not os.path.isdir(cfg.PATH_CHECKPOINTS):
@@ -88,8 +91,9 @@ def load_checkpoint(fpath_chkpoint_folder):
 # Arguments
 #   fpath_test_result: File to write test results to
 #   str_headerline: First line to be printed in file
+#   epoch: Number of epochs the model have been trained for
 #   loss: Average loss per evaluated data instance
-#   classification_report: Classification Report from sklearn.metrics.classification_report
+#   classifi_report: Classification Report from sklearn.metrics.classification_report
 #   mcc:  Results' Matthews correlation coefficient
 #   is_print_to_console: Print file contents to console too
 def write_test_results(fpath_test_result, str_headerline, epoch, loss, classifi_report, mcc, is_print_to_console=True):

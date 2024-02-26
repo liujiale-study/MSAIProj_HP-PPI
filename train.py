@@ -1,3 +1,7 @@
+# <<Test Script>>
+# Execute this file to start training or resume training from a specified checkpoint folder.
+# See README.md for details on how to train the model.
+
 import argparse
 from torch_geometric.loader import LinkNeighborLoader
 from torch_geometric import seed_everything

@@ -1,3 +1,6 @@
+# <<Model Script>>
+# This file defines the model class, which contains the architecture/setup of the model.
+
 import torch
 from torch_geometric.nn import ResGatedGraphConv, GATConv, TransformerConv, GINEConv, to_hetero
 from torch_geometric.data import HeteroData
@@ -104,6 +107,7 @@ class PPIVirulencePredictionModel(torch.nn.Module):
         edge_embed_virus = x_virus[edge_label_index[1]]
         edge_embed = torch.cat((edge_embed_mouse, edge_embed_virus), 1)
         
+        # Input/Output through classification head
         out = self.classifer(edge_embed)
 
         if self.is_output_intermediate_rep:
