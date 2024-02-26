@@ -1,5 +1,5 @@
 # <<Config Script>>
-# This file contains constants that serves as fixed configurations for the rest of the program
+# This file contains constants that serves as fixed configurations for the rest of the program.
 
 # Data Paths
 PATH_VIRUS_FEAT = "./data/virus_proteins.csv"
