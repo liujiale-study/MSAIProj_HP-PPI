@@ -144,7 +144,6 @@ FNAME_METRIC_RESULT_CSV = "metric_results.csv"
 FNAME_VALIDATION_LAST_REPORT = "last_validationset_classification_report.txt"
 FNAME_TEST_RESULT_CURRMODEL_TXT = "test_results_currmodel.txt"
 FNAME_TEST_RESULT_BEST_MODEL_TXT = "test_results_bestmodel.txt"
-FNAME_INTERMEDIATE_REP_BEST_MODEL = "supervision_edge_intermediate_rep_bestmodel.csv"
 
 # Checkpoint Dictionary Properties
 CHKPT_DICTKEY_EPOCH = "epoch"
