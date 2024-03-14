@@ -56,11 +56,11 @@ INDEX_EDGE_LABEL_VID = 1
 
 # Number of input channels for model's hidden layers
 MODEL_HIDDEN_NUM_CHNLS=512
+
 # Subgraph Sampling
-# Index 0: Number of 1-hop neighbours to sample
-# Index 1: Number of 2-hop neighbours to sample
+# Index 0: Number of 1-hop neighbours to sample for each node connected by supervision edges
+# Index 1: Number of 2-hop neighbours to sample for each sampled 1-hop neighbours
 # ... etc.
-# Applies to each node per iteration
 SUBGRAPH_NUM_NEIGHBOURS = [50,50] 
 
 # Batch Sizes
