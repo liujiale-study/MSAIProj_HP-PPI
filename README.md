@@ -1,7 +1,7 @@
-# Virulence Prediction Model for Host-IAV Protein-Protein Interactions
+# Virulence Classification Model for Mouse-IAV Protein-Protein Interactions
 A project for NTU MSc Artificial Intelligence course. 
 
-In this project, we design and implement a model that utilises Graph Neural Networks (GNN) to predict the virulence class of protein-protein interactions between mouse and IAV proteins.
+In this project, we design and implement a Graph Neural Network (GNN) model to predict the virulence class of protein-protein interactions between mouse and IAV proteins.
 We also create a dataset for training and evaluating our model.
 
 ## Environment Setup
@@ -18,13 +18,13 @@ The following dataset files must be in the `data/` folder for the program to wor
 * `pp_interactions.csv`
 * `virus_proteins.csv`
 
-The dataset is used to construct a graph to be subsampled from and processed by our GNN.
+The dataset is used to construct a graph to be processed by our GNN.
 Our GNN is designed to do edge prediction, and before training or evaluation, the program will perform train-validation-test split on the graph edges at a ratio of 70:20:10.
 Training set edges are additionally split into message passing and supervision edges at the ratio of 70:30.
 
 ## Training the Model
 The training script will train the model for 150 epochs.
-During this time, the program will also record the best fit model based on loss on validation set.
+During this time, the program will also record the best fit model based on lowest loss on validation set.
 Periodically after a set number of epochs, both the current model (i.e. the model that is trained thus far) and the best fit model will be checkpointed, generating a checkpoint folder within the `checkpoints/` folder.
 
 To start training the model using the default GNN operator (RGGCN operator), simply run:
@@ -44,7 +44,7 @@ python train.py -g <ID_of_gnn_operator>
 ```
 Example: `python train.py -g 1` to train the model while it uses the GAT operator.
 
-The operators of the following GNN are implemented in this project. Their corresponding IDs are also as follows, alongside any key model parameters that do not use their default values.
+The operators of the following GNNs are implemented in this project. Their corresponding GNN operator IDs are also as follows, alongside any key model parameters that do not use their default values.
 * [Residual Gated Graph Convolutional Network (RGGCN)](https://pytorch-geometric.readthedocs.io/en/latest/generated/torch_geometric.nn.conv.ResGatedGraphConv.html): ID `0` (default operator)
 * [Graph Attentional Network (GAT)](https://pytorch-geometric.readthedocs.io/en/latest/generated/torch_geometric.nn.conv.GATConv.html): ID `1`
   * `heads=4`, `concat=False`
